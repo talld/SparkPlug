@@ -32,6 +32,7 @@ class VkRender
 
 public:
 	void bootRender() {
+		initSettings();
 		initWindow();
 		initVulkan();
 	}
@@ -52,9 +53,16 @@ private:
 		createSurface();
 		selectPhysicalDevice();
 		createLogicalDevice();
-		createSwaphChain();
+		createSwapchain();
 		createRenderPass();
-		createGraphicsPiprline();
+		createGraphicsPipeline();
+		createFrameBuffers();
+		createGrahpicsCommandPool();
+		createCreateCommandBuffers();
+		recordCommandBuffers();
+		createSemaphores();
+		createFences();
+		initCleanUp();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +71,7 @@ private:
 	//this will be replaced by a build into gslang compiler that compiles glsl into sprv on build
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		static std::vector<char> readFile(const std::string& filename) {
+	static std::vector<char> readFile(const std::string& filename) {
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
 		if (!file.is_open()) {
@@ -79,6 +87,16 @@ private:
 		file.close();
 
 		return buffer;
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	struct Settings {
+		int maxBufferedImages;
+	};
+	Settings settings;
+	
+	void initSettings() {
+	settings.maxBufferedImages = 3;
+
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,9 +151,9 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 		populateDebugMessengerCreateInfo(createInfo);
 
-		if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-			throw std::runtime_error("failed to set up debug messenger!");
-		}
+if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
+	throw std::runtime_error("failed to set up debug messenger!");
+}
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +212,171 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// vulkan functions
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		Sync functions
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	struct GraphicSemaphores {
+		VkSemaphore imageAvailable;
+		VkSemaphore renderFinished;
+	};
 
+	std::vector <GraphicSemaphores> graphicSemaphores;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void createSemaphores() {
+
+		graphicSemaphores.resize(settings.maxBufferedImages);
+
+		VkSemaphoreCreateInfo semaphoreCreateInfo{};
+		semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
+			if (vkCreateSemaphore(devices.lDevice, &semaphoreCreateInfo, nullptr, &graphicSemaphores[i].imageAvailable) != VK_SUCCESS ||
+				vkCreateSemaphore(devices.lDevice, &semaphoreCreateInfo, nullptr, &graphicSemaphores[i].renderFinished) != VK_SUCCESS) {
+
+				throw std::runtime_error("failed to create graphic semaphores");
+			}
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	struct SwapchainFences {
+		VkFence imagesInFlight;
+	};
+	std::vector<SwapchainFences> swapchainFences;
+
+	struct GraphicFences {
+		VkFence renderFence;
+	};
+	std::vector<GraphicFences> graphicFences;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void createFences() {
+		graphicFences.resize(settings.maxBufferedImages);
+
+		VkFenceCreateInfo fenceCreateInfo{};
+		fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
+			if (vkCreateFence(devices.lDevice, &fenceCreateInfo, nullptr, &graphicFences[i].renderFence) != VK_SUCCESS) {
+				throw std::runtime_error("Failed to create graphic fences");
+			}
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		commandBuffer functions
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void recordCommandBuffers() {
+
+		VkCommandBufferBeginInfo graphicBufferBeginInfo{};
+		graphicBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		graphicBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+		VkRenderPassBeginInfo renderPassBeginInfo{};
+		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassBeginInfo.renderPass = renderPasses.main;
+		renderPassBeginInfo.renderArea.offset = { 0, 0 };
+		renderPassBeginInfo.renderArea.extent = swapchainDetails.extent2D;
+		VkClearValue clearColor = { 0.65f, 0.6f, 0.4f, 1.0f };
+		renderPassBeginInfo.clearValueCount = 1;
+		renderPassBeginInfo.pClearValues = &clearColor;
+		//renderBeginPassInfo.framebuffer = swapchainFramebuffers[i];
+
+		for (size_t i = 0; i < commandBuffers.graphicsCommandBuffers.size(); i++) {
+
+			renderPassBeginInfo.framebuffer = swapchainDetails.framebuffers[i];
+
+			if (vkBeginCommandBuffer(commandBuffers.graphicsCommandBuffers[i], &graphicBufferBeginInfo) != VK_SUCCESS) {
+				throw std::runtime_error(std::string("Failed to begin graphics command buffer record, interation :" + i));
+			}
+	
+				vkCmdBeginRenderPass(commandBuffers.graphicsCommandBuffers[i],&renderPassBeginInfo,VK_SUBPASS_CONTENTS_INLINE);
+
+					vkCmdBindPipeline(commandBuffers.graphicsCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.graphicsPipeline);
+
+					vkCmdSetScissor(commandBuffers.graphicsCommandBuffers[i], 0, 1, &view.scissor);
+
+					vkCmdSetViewport(commandBuffers.graphicsCommandBuffers[i], 0, 1, &view.viewPort);
+
+					vkCmdDraw(commandBuffers.graphicsCommandBuffers[i], 3, 1, 0, 0);
+
+				vkCmdEndRenderPass(commandBuffers.graphicsCommandBuffers[i]);
+			
+			if (vkEndCommandBuffer(commandBuffers.graphicsCommandBuffers[i]) != VK_SUCCESS) {
+				throw std::runtime_error(std::string("Failed to end graphics command buffer record, interation :" + i));
+			}
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	struct CommandBuffers{
+		std::vector<VkCommandBuffer> graphicsCommandBuffers;
+	};
+
+	CommandBuffers commandBuffers;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void createCreateCommandBuffers() {
+		commandBuffers.graphicsCommandBuffers.resize(swapchainDetails.framebuffers.size());
+
+		VkCommandBufferAllocateInfo graphicsCommandBufferAllocateInfo{};
+		graphicsCommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		graphicsCommandBufferAllocateInfo.commandPool = commandPools.graphicsCommandPool;
+		graphicsCommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		graphicsCommandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.graphicsCommandBuffers.size());
+
+		if (vkAllocateCommandBuffers(devices.lDevice, &graphicsCommandBufferAllocateInfo, commandBuffers.graphicsCommandBuffers.data()) != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create command buffers");
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		pool functions
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	struct CommandPools{
+		VkCommandPool graphicsCommandPool;
+	};
+
+	CommandPools commandPools;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void createGrahpicsCommandPool() {
+
+		VkCommandPoolCreateInfo commandPoolCreateInfo{};
+		commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		commandPoolCreateInfo.queueFamilyIndex = indices.graphicsFamilyIndex;
+
+		if (vkCreateCommandPool(devices.lDevice, &commandPoolCreateInfo, nullptr, &commandPools.graphicsCommandPool) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create command pool!");
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		Frame Buffer functions
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void createFrameBuffers() {
+		swapchainDetails.framebuffers.resize(swapchainDetails.swapchainImages.size());
+
+		for (size_t i = 0; i < swapchainDetails.framebuffers.size(); i++) {
+
+			std::array<VkImageView, 1> attachments = {
+				swapchainDetails.swapchainImages[i].imageView
+			};
+
+			VkFramebufferCreateInfo framebufferCreateInfo{};
+			framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+			framebufferCreateInfo.renderPass = renderPasses.main;
+			framebufferCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+			framebufferCreateInfo.pAttachments = attachments.data();
+			framebufferCreateInfo.width = swapchainDetails.extent2D.width;
+			framebufferCreateInfo.height = swapchainDetails.extent2D.height;
+			framebufferCreateInfo.layers = 1;
+
+
+			if (vkCreateFramebuffer(devices.lDevice, &framebufferCreateInfo, nullptr, &swapchainDetails.framebuffers[i]) != VK_SUCCESS) {
+				throw std::runtime_error("Failed to create framebuffer");
+			}
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//		Shader Functions
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +388,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 		VkShaderModule shaderModule;
-		if (vkCreateShaderModule(devices.lDevice, &shaderModuleCreateInfo, nullptr, &shaderModule)) {
+		if (vkCreateShaderModule(devices.lDevice, &shaderModuleCreateInfo, nullptr, &shaderModule) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create shader module");
 		}
 
@@ -222,8 +404,15 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	};
 
 	Pipeline pipeline;
+	
+	struct view{
+		VkRect2D scissor{};
+		VkViewport viewPort{};
+	};
+
+	view view;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void createGraphicsPiprline() {
+	void createGraphicsPipeline() {
 
 		auto vertexShaderCode = readFile("Shaders/vert.spv");
 		auto fragmentShaderCode = readFile("Shaders/frag.spv");
@@ -261,23 +450,21 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		viewPortCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 		viewPortCreateInfo.viewportCount = 1;
 		
-		VkViewport viewPort{};
-		viewPort.x = 0.0f;
-		viewPort.y = 0.0f;
-		viewPort.width = (float) swapChainDetails.extent2D.width;
-		viewPort.height = (float)swapChainDetails.extent2D.height;
-		viewPort.minDepth = 0.0f;
-		viewPort.maxDepth = 1.0f;
+		view.viewPort.x = 0.0f;
+		view.viewPort.y = 0.0f;
+		view.viewPort.width = (float) swapchainDetails.extent2D.width;
+		view.viewPort.height = (float)swapchainDetails.extent2D.height;
+		view.viewPort.minDepth = 0.0f;
+		view.viewPort.maxDepth = 1.0f;
 
-		viewPortCreateInfo.pViewports = &viewPort;
+		viewPortCreateInfo.pViewports = &view.viewPort;
 
 		viewPortCreateInfo.scissorCount = 1;
 
-		VkRect2D scissor{};
-		scissor.offset = { 0,0 };
-		scissor.extent = swapChainDetails.extent2D;
+		view.scissor.offset = { 0,0 };
+		view.scissor.extent = swapchainDetails.extent2D;
 
-		viewPortCreateInfo.pScissors = &scissor;
+		viewPortCreateInfo.pScissors = &view.scissor;
 	
 		VkPipelineRasterizationStateCreateInfo rasterizerCreateInfo{};
 		rasterizerCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -379,7 +566,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void createRenderPass() {
 		VkAttachmentDescription colorAttchment{};
-		colorAttchment.format = swapChainDetails.format.format;
+		colorAttchment.format = swapchainDetails.format.format;
 		colorAttchment.samples = VK_SAMPLE_COUNT_1_BIT;
 		colorAttchment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttchment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -424,7 +611,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		renderPassCreateInfo.dependencyCount = static_cast<uint32_t>(subpassDependencies.size());
 		renderPassCreateInfo.pDependencies = subpassDependencies.data();
 
-		if (vkCreateRenderPass(devices.lDevice,&renderPassCreateInfo,nullptr,&renderPasses.main)) {
+		if (vkCreateRenderPass(devices.lDevice,&renderPassCreateInfo,nullptr,&renderPasses.main) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create Renderpass");
 		}
 	}
@@ -450,7 +637,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		imageViewCreateInfo.subresourceRange.layerCount = 1;
 
 		VkImageView imageView;
-		if (vkCreateImageView(devices.lDevice, &imageViewCreateInfo, nullptr, &imageView)) {
+		if (vkCreateImageView(devices.lDevice, &imageViewCreateInfo, nullptr, &imageView) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create Image view");
 		}
 		return imageView;
@@ -475,7 +662,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	VkPresentModeKHR selectSwapChainPresentMode(std::vector<VkPresentModeKHR> presentModes) {
+	VkPresentModeKHR selectSwapchainPresentMode(std::vector<VkPresentModeKHR> presentModes) {
 		for (const auto& presentMode : presentModes) {
 			if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
 				return presentMode;
@@ -486,7 +673,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	VkFormat selectSwapChainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
+	VkFormat selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
 		
 		VkFormat chosenFormat = availableFormats[0].format;
 		
@@ -507,7 +694,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	VkColorSpaceKHR selectSwapChainColorSpace(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
+	VkColorSpaceKHR selectSwapchainColorSpace(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
 		for (const auto& availableFormat : availableFormats) {
 			if (availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 				return VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -517,12 +704,12 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	VkSurfaceFormatKHR selectSwapChainSurfaceFormat(std::vector<VkSurfaceFormatKHR> availableFormats) {
+	VkSurfaceFormatKHR selectSwapchainSurfaceFormat(std::vector<VkSurfaceFormatKHR> availableFormats) {
 		
 		VkSurfaceFormatKHR format{};
 
-		format.colorSpace = selectSwapChainColorSpace(format, availableFormats);
-		format.format = selectSwapChainFormat(format, availableFormats);
+		format.colorSpace = selectSwapchainColorSpace(format, availableFormats);
+		format.format = selectSwapchainFormat(format, availableFormats);
 
 		return format;
 	}
@@ -533,7 +720,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		std::vector<VkPresentModeKHR> presentModes;
 	};
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	SwapChainSupportDetails getSurfaceSwapChainSupport(VkPhysicalDevice device) {
+	SwapChainSupportDetails getSurfaceSwapchainSupport(VkPhysicalDevice device) {
 		SwapChainSupportDetails supportDetails;
 
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &supportDetails.capabilities);
@@ -557,30 +744,30 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		return supportDetails;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct SwapChainImage {
+	struct SwapchainImage {
 		VkImage image;
 		VkImageView imageView;
 	};
-
-	std::vector<SwapChainImage> swapChainImages;
 	
-	struct SwapChainDetails {
+	struct SwapchainDetails {
 		VkExtent2D extent2D;
 		VkSurfaceFormatKHR format;
 		VkPresentModeKHR presentMode;
+		std::vector<SwapchainImage> swapchainImages;
+		std::vector<VkFramebuffer> framebuffers;
 	};
-	SwapChainDetails swapChainDetails;
+	SwapchainDetails swapchainDetails;
 
-	VkSwapchainKHR swapChain;
+	VkSwapchainKHR swapchain;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void createSwaphChain() {
-		SwapChainSupportDetails swapChainSupport = getSurfaceSwapChainSupport(devices.pDevice);
+	void createSwapchain() {
+		SwapChainSupportDetails swapChainSupport = getSurfaceSwapchainSupport(devices.pDevice);
 
-		VkSurfaceFormatKHR format = selectSwapChainSurfaceFormat(swapChainSupport.formats);
-		VkPresentModeKHR presentMode = selectSwapChainPresentMode(swapChainSupport.presentModes);
+		VkSurfaceFormatKHR format = selectSwapchainSurfaceFormat(swapChainSupport.formats);
+		VkPresentModeKHR presentMode = selectSwapchainPresentMode(swapChainSupport.presentModes);
 		VkExtent2D extent = selectSwapExtent(swapChainSupport.capabilities);
 		uint32_t minImageCount;
-		if(swapChainSupport.capabilities.maxImageCount != 0){
+		if (swapChainSupport.capabilities.maxImageCount != 0) {
 			minImageCount = std::min(swapChainSupport.capabilities.minImageCount + 1, swapChainSupport.capabilities.maxImageCount);
 		}
 		else {
@@ -605,7 +792,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		if (indices.graphicsFamilyIndex != indices.presentationFamilyIndex) {
 			swapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 			swapChainCreateInfo.queueFamilyIndexCount = 2;
-			uint32_t queueFamilyIndices[] = { static_cast<uint32_t>(indices.graphicsFamilyIndex), static_cast<uint32_t>(indices.presentationFamilyIndex)};
+			uint32_t queueFamilyIndices[] = { static_cast<uint32_t>(indices.graphicsFamilyIndex), static_cast<uint32_t>(indices.presentationFamilyIndex) };
 			swapChainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
 		}
 		else {
@@ -614,24 +801,24 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 			swapChainCreateInfo.pQueueFamilyIndices = nullptr; // Optional
 		}
 
-		if (vkCreateSwapchainKHR(devices.lDevice, &swapChainCreateInfo, nullptr, &swapChain) != VK_SUCCESS) {
+		if (vkCreateSwapchainKHR(devices.lDevice, &swapChainCreateInfo, nullptr, &swapchain) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create swapchain");
 		}
 
-		swapChainDetails.extent2D = extent;
-		swapChainDetails.format = format;
-		swapChainDetails.presentMode = presentMode;
+		swapchainDetails.extent2D = extent;
+		swapchainDetails.format = format;
+		swapchainDetails.presentMode = presentMode;
 
 		uint32_t swapChainImageCount = 0;
-		vkGetSwapchainImagesKHR(devices.lDevice, swapChain, &swapChainImageCount, nullptr);
+		vkGetSwapchainImagesKHR(devices.lDevice, swapchain, &swapChainImageCount, nullptr);
 		std::vector<VkImage> images(swapChainImageCount);
-		vkGetSwapchainImagesKHR(devices.lDevice, swapChain, &swapChainImageCount,images.data());
+		vkGetSwapchainImagesKHR(devices.lDevice, swapchain, &swapChainImageCount, images.data());
 
 		for (VkImage image : images) {
-			SwapChainImage swapChainImage{};
-			swapChainImage.image = image;
-			swapChainImage.imageView = createImageView(image, format.format, VK_IMAGE_ASPECT_COLOR_BIT);
-			swapChainImages.push_back(swapChainImage);
+			SwapchainImage swapchainImage{};
+			swapchainImage.image = image;
+			swapchainImage.imageView = createImageView(image, format.format, VK_IMAGE_ASPECT_COLOR_BIT);
+			swapchainDetails.swapchainImages.push_back(swapchainImage);
 		}
 
 	}
@@ -676,7 +863,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 		deviceCreateInfo.ppEnabledExtensionNames = physicalDeviceExtensions.data();
 		deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
 
-		if (vkCreateDevice(devices.pDevice, &deviceCreateInfo, nullptr, &devices.lDevice)) {
+		if (vkCreateDevice(devices.pDevice, &deviceCreateInfo, nullptr, &devices.lDevice) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create logical device");
 		}
 
@@ -890,7 +1077,7 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool checkDeviceSwapChain(VkPhysicalDevice device) {
-		SwapChainSupportDetails  swapChainSupport= getSurfaceSwapChainSupport(device);
+		SwapChainSupportDetails  swapChainSupport= getSurfaceSwapchainSupport(device);
 		return !swapChainSupport.presentModes.empty() && !swapChainSupport.formats.empty();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -959,8 +1146,9 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	GLFWwindow* window;
 
-	const uint32_t WIDTH = 800;
-	const uint32_t HEIGHT = 600;
+	const uint32_t WIDTH = 1024;
+	const uint32_t HEIGHT = 720;
+	size_t currentFrame = 0;
 
 	void initWindow() {
 		glfwInit();
@@ -982,6 +1170,45 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void render() {
 
+		vkWaitForFences(devices.lDevice, 1, &graphicFences[currentFrame].renderFence, VK_TRUE, UINT64_MAX);
+		vkResetFences(devices.lDevice, 1, &graphicFences[currentFrame].renderFence);
+		uint32_t imageIndex;
+		vkAcquireNextImageKHR(devices.lDevice, swapchain, UINT64_MAX, graphicSemaphores[currentFrame].imageAvailable, VK_NULL_HANDLE, &imageIndex);
+
+		VkSemaphore waitSemaphores[] = { graphicSemaphores[currentFrame].imageAvailable };
+		VkSemaphore signalSemaphores[] = { graphicSemaphores[currentFrame].renderFinished };
+		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+		VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.pWaitSemaphores = waitSemaphores;
+		submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = &commandBuffers.graphicsCommandBuffers[imageIndex];
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = signalSemaphores;
+
+		if (vkQueueSubmit(queues.graphicsQueue, 1, &submitInfo, graphicFences[currentFrame].renderFence) != VK_SUCCESS) {
+			throw std::runtime_error("failed to submit draw command buffer!");
+		}
+
+		VkSwapchainKHR swapchains[] = { swapchain };
+
+		VkPresentInfoKHR presentInfo{};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = signalSemaphores;
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = swapchains;
+		presentInfo.pImageIndices = &imageIndex;
+
+		presentInfo.pResults = nullptr; // Optional
+
+		if (vkQueuePresentKHR(queues.presentationQueue, &presentInfo) != VK_SUCCESS) {
+			throw std::runtime_error("Failed to present");
+		}
+		currentFrame = (currentFrame + 1) % settings.maxBufferedImages;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -990,14 +1217,34 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 			update();
 			render();
 		}
+		vkDeviceWaitIdle(devices.lDevice);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		termination functions
+	//		cleanUp functions
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	void initCleanUp() {
+
+	}
+
 	void cleanUp() {
+
+		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
+			vkDestroyFence(devices.lDevice, graphicFences[i].renderFence, nullptr);
+		}
+
+		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
+			vkDestroySemaphore(devices.lDevice, graphicSemaphores[i].renderFinished, nullptr);
+			vkDestroySemaphore(devices.lDevice, graphicSemaphores[i].imageAvailable, nullptr);
+		}
+		vkDestroyCommandPool(devices.lDevice, commandPools.graphicsCommandPool, nullptr);
+
+		for (auto framebuffer : swapchainDetails.framebuffers) {
+			vkDestroyFramebuffer(devices.lDevice, framebuffer, nullptr);
+		}
+
 
 		vkDestroyPipeline(devices.lDevice, pipeline.graphicsPipeline, nullptr);
 
@@ -1005,11 +1252,11 @@ static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugU
 
 		vkDestroyRenderPass(devices.lDevice, renderPasses.main, nullptr);
 
-		for (auto& image : swapChainImages) {
+		for (auto& image : swapchainDetails.swapchainImages) {
 			vkDestroyImageView(devices.lDevice, image.imageView, nullptr);
 		}
 		
-		vkDestroySwapchainKHR(devices.lDevice, swapChain, nullptr);
+		vkDestroySwapchainKHR(devices.lDevice, swapchain, nullptr);
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 
 		if (enableValidationLayers) {
