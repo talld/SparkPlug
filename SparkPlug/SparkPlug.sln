@@ -5,6 +5,53 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SparkPlug", "SparkPlug.vcxproj", "{B8CFC589-72FC-4821-94A3-3A27FFF804F8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "org", "org", "{BD04726C-ECB6-4D2D-A3CD-63CC1C85DEB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{E14BF3EA-46A6-40A5-ADF2-17D06888556B}"
+	ProjectSection(SolutionItems) = preProject
+		Engine.h = Engine.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderer", "Renderer", "{A780BE99-9770-4A77-9857-0F8F9DE8036B}"
+	ProjectSection(SolutionItems) = preProject
+		Renderer.h = Renderer.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Instance", "Instance", "{6CF877D2-4D0F-4BFF-8D5B-C393594F7D7F}"
+	ProjectSection(SolutionItems) = preProject
+		Instance.h = Instance.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Window", "Window", "{A9A6274F-7852-47F8-8515-3B0F9D049385}"
+	ProjectSection(SolutionItems) = preProject
+		Window.h = Window.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhysicalDevice", "PhysicalDevice", "{02FC7BB7-E15B-4650-8F26-1B0F07B7E4CD}"
+	ProjectSection(SolutionItems) = preProject
+		PhysicalDevice.h = PhysicalDevice.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogicalDevice", "LogicalDevice", "{C9B564F6-F52C-4873-AAC4-A33BA55E267C}"
+	ProjectSection(SolutionItems) = preProject
+		LogicalDevice.h = LogicalDevice.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RenderPass", "RenderPass", "{81E0FB60-0797-41AF-ACB4-76F0D5BC5145}"
+	ProjectSection(SolutionItems) = preProject
+		RenderPass.h = RenderPass.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GraphicsPipeline", "GraphicsPipeline", "{744B609A-E8F1-44B6-8612-405BA44A8E50}"
+	ProjectSection(SolutionItems) = preProject
+		GraphicsPipeline.h = GraphicsPipeline.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Swapchain", "Swapchain", "{FF557108-77A4-43EF-8790-0DE5FE78956E}"
+	ProjectSection(SolutionItems) = preProject
+		Swapchain.h = Swapchain.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -24,6 +71,17 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E14BF3EA-46A6-40A5-ADF2-17D06888556B} = {BD04726C-ECB6-4D2D-A3CD-63CC1C85DEB9}
+		{A780BE99-9770-4A77-9857-0F8F9DE8036B} = {E14BF3EA-46A6-40A5-ADF2-17D06888556B}
+		{6CF877D2-4D0F-4BFF-8D5B-C393594F7D7F} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{A9A6274F-7852-47F8-8515-3B0F9D049385} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{02FC7BB7-E15B-4650-8F26-1B0F07B7E4CD} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{C9B564F6-F52C-4873-AAC4-A33BA55E267C} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{81E0FB60-0797-41AF-ACB4-76F0D5BC5145} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{744B609A-E8F1-44B6-8612-405BA44A8E50} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{FF557108-77A4-43EF-8790-0DE5FE78956E} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDE27010-9511-46A4-AED0-8FCE2728AD02}
