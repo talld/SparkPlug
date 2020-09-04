@@ -19,37 +19,72 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderer", "Renderer", "{A7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Instance", "Instance", "{6CF877D2-4D0F-4BFF-8D5B-C393594F7D7F}"
 	ProjectSection(SolutionItems) = preProject
+		Instance.cpp = Instance.cpp
 		Instance.h = Instance.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Window", "Window", "{A9A6274F-7852-47F8-8515-3B0F9D049385}"
 	ProjectSection(SolutionItems) = preProject
+		Window.cpp = Window.cpp
 		Window.h = Window.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhysicalDevice", "PhysicalDevice", "{02FC7BB7-E15B-4650-8F26-1B0F07B7E4CD}"
 	ProjectSection(SolutionItems) = preProject
+		PhysicalDevice.cpp = PhysicalDevice.cpp
 		PhysicalDevice.h = PhysicalDevice.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogicalDevice", "LogicalDevice", "{C9B564F6-F52C-4873-AAC4-A33BA55E267C}"
 	ProjectSection(SolutionItems) = preProject
+		LogicalDevice.cpp = LogicalDevice.cpp
 		LogicalDevice.h = LogicalDevice.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RenderPass", "RenderPass", "{81E0FB60-0797-41AF-ACB4-76F0D5BC5145}"
 	ProjectSection(SolutionItems) = preProject
+		RenderPass.cpp = RenderPass.cpp
 		RenderPass.h = RenderPass.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GraphicsPipeline", "GraphicsPipeline", "{744B609A-E8F1-44B6-8612-405BA44A8E50}"
 	ProjectSection(SolutionItems) = preProject
+		GraphicsPipeline.cpp = GraphicsPipeline.cpp
 		GraphicsPipeline.h = GraphicsPipeline.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Swapchain", "Swapchain", "{FF557108-77A4-43EF-8790-0DE5FE78956E}"
 	ProjectSection(SolutionItems) = preProject
+		Swapchain.cpp = Swapchain.cpp
 		Swapchain.h = Swapchain.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{EA296939-BE74-4716-ACC3-03271BC44484}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandBuffers", "CommandBuffers", "{03B24865-1E9A-4CC5-9225-DB6E3DEAB269}"
+	ProjectSection(SolutionItems) = preProject
+		CommandBuffer.cpp = CommandBuffer.cpp
+		CommandBuffer.h = CommandBuffer.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandPool", "CommandPool", "{A836700F-5F82-49D7-994F-9B762073659C}"
+	ProjectSection(SolutionItems) = preProject
+		CommandPool.cpp = CommandPool.cpp
+		CommandPool.h = CommandPool.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sync", "Sync", "{81B34134-87F8-46F9-BC1B-2C40B0B0EC67}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Semaphores", "Semaphores", "{43EA8E62-9A46-4A1C-80E9-EE6B2261C6CE}"
+	ProjectSection(SolutionItems) = preProject
+		Semaphores.cpp = Semaphores.cpp
+		Semaphores.h = Semaphores.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fences", "Fences", "{126F73FE-7DF9-40C7-A7D6-D60F428EEAA2}"
+	ProjectSection(SolutionItems) = preProject
+		Fences.cpp = Fences.cpp
+		Fences.h = Fences.h
 	EndProjectSection
 EndProject
 Global
@@ -82,6 +117,12 @@ Global
 		{81E0FB60-0797-41AF-ACB4-76F0D5BC5145} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
 		{744B609A-E8F1-44B6-8612-405BA44A8E50} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
 		{FF557108-77A4-43EF-8790-0DE5FE78956E} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{EA296939-BE74-4716-ACC3-03271BC44484} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{03B24865-1E9A-4CC5-9225-DB6E3DEAB269} = {EA296939-BE74-4716-ACC3-03271BC44484}
+		{A836700F-5F82-49D7-994F-9B762073659C} = {EA296939-BE74-4716-ACC3-03271BC44484}
+		{81B34134-87F8-46F9-BC1B-2C40B0B0EC67} = {A780BE99-9770-4A77-9857-0F8F9DE8036B}
+		{43EA8E62-9A46-4A1C-80E9-EE6B2261C6CE} = {81B34134-87F8-46F9-BC1B-2C40B0B0EC67}
+		{126F73FE-7DF9-40C7-A7D6-D60F428EEAA2} = {81B34134-87F8-46F9-BC1B-2C40B0B0EC67}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDE27010-9511-46A4-AED0-8FCE2728AD02}

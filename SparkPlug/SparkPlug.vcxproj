@@ -75,12 +75,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -163,11 +165,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="CommandPool.cpp" />
+    <ClCompile Include="Fences.cpp" />
+    <ClCompile Include="GraphicsPipeline.cpp" />
+    <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="LogicalDevice.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PhysicalDevice.cpp" />
+    <ClCompile Include="RenderPass.cpp" />
+    <ClCompile Include="Semaphores.cpp" />
     <ClCompile Include="SparkPlug.cpp" />
+    <ClCompile Include="Swapchain.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandBuffer.h" />
+    <ClInclude Include="CommandPool.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Fences.h" />
     <ClInclude Include="GraphicsPipeline.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Input.h" />
@@ -176,6 +192,7 @@
     <ClInclude Include="PhysicalDevice.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderPass.h" />
+    <ClInclude Include="Semaphores.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

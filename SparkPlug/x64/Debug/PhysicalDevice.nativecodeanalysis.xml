@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>F:\SparkPlug\SparkPlug\</FILEPATH>
+      <FILENAME>PhysicalDevice.h</FILENAME>
+      <LINE>25</LINE>
+      <COLUMN>0</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'SwapChainSupportDetails::capabilities' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>SwapChainSupportDetails::{ctor}</FUNCTION>
+    <DECORATED>??0SwapChainSupportDetails@@QEAA@XZ</DECORATED>
+    <FUNCLINE>25</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>SwapChainSupportDetails::capabilities</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

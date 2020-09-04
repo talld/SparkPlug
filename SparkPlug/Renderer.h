@@ -15,18 +15,38 @@
 #include <fstream>
 
 #include "Instance.h"
+#include "Instance.cpp"
 
 #include "Window.h"
+#include "Window.cpp"
 
 #include "PhysicalDevice.h"
+#include "PhysicalDevice.cpp"
 
 #include "LogicalDevice.h"
+#include "LogicalDevice.cpp"
 
 #include "Swapchain.h"
+#include "Swapchain.cpp"
 
 #include "RenderPass.h"
+#include "RenderPass.cpp"
+
 
 #include "GraphicsPipeline.h"
+#include "GraphicsPipeline.cpp"
+
+#include "CommandPool.h"
+#include "CommandPool.cpp"
+
+#include "CommandBuffer.h"
+#include "CommandBuffer.cpp"
+
+#include "Fences.h"
+#include "Fences.cpp"
+
+#include "Semaphores.h"
+#include "Semaphores.cpp"
 
 
 /*TODO: 
@@ -38,12 +58,20 @@
 	depth buffing
 */
 
+class Instance;
+
+class Window;
+
 
 
 class Renderer
 {
 
 public:
+
+	struct Settings {
+		int maxBufferedImages;
+	};
 
 	void bootRender() {
 		initSettings();
@@ -68,6 +96,8 @@ private:
 	const bool enableValidationLayers = true;
 #endif
 
+	Settings settings;
+
 	GLFWwindow* glfwWindow;
 	Window window;
 	VkSurfaceKHR surface;
@@ -87,214 +117,63 @@ private:
 	RenderPass renderPass;
 	GraphicsPipeline graphicsPipeline;
 
+	CommandPool commandPool;
+	VkCommandPool graphicsCommandPool;
+	CommandBuffer commandBuffer;
 
+	Semaphores semaphores;
+	Fences fences;
+
+	int currentFrame = 0;
 
 	void initVulkan() {
 		instance.createInstance(enableValidationLayers);
 		vkInstance = instance.getInstance();
+
 		window.createSurface(vkInstance);
 		surface = window.getSurface();
-		physicalDevice.selectPhysicalDevice(vkInstance, surface, enableValidationLayers);
+
+		physicalDevice.select(vkInstance, surface, enableValidationLayers);
 		vkPhysicalDevice = physicalDevice.getPhysicalDevice();
-		logicalDevice.createLogicalDevice(physicalDevice);
+
+		logicalDevice.create(physicalDevice);
 		vkLogicalDevice = logicalDevice.getLogicalDevice();
-		swapchain.createSwapchain(physicalDevice,logicalDevice, surface, window);
+
+		swapchain.create(physicalDevice,logicalDevice, surface, window);
 		vkSwapchain = swapchain.getSwapchain();
-		renderPass.createRenderPass(vkLogicalDevice,swapchain);
-		graphicsPipeline.createGraphicsPipeline(vkLogicalDevice,swapchain,renderPass);
-		swapchain.createFrameBuffers(vkLogicalDevice,renderPass);
-		createGrahpicsCommandPool();
-		createCreateCommandBuffers();
-		recordCommandBuffers();
-		createSemaphores();
-		createFences();
+
+		renderPass.create(vkLogicalDevice,swapchain);
+
+		graphicsPipeline.create(vkLogicalDevice,swapchain,renderPass);
+
+		swapchain.create(vkLogicalDevice,renderPass);
+		commandPool.create(physicalDevice, vkLogicalDevice);
+		graphicsCommandPool = commandPool.getCommandPools().graphicsCommandPool;
+		commandBuffer.create(vkLogicalDevice,swapchain,graphicsCommandPool);
+		commandBuffer.record(swapchain,renderPass,graphicsPipeline);
+		semaphores.create(vkLogicalDevice, settings.maxBufferedImages);
+		fences.create(vkLogicalDevice, settings.maxBufferedImages);
 		initCleanUp();
 	}
 
 
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct Settings {
-		int maxBufferedImages;
-	};
-	Settings settings;
-	
 	void initSettings() {
 	settings.maxBufferedImages = 3;
 
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// vulkan functions
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Sync functions
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct GraphicSemaphores {
-		VkSemaphore imageAvailable;
-		VkSemaphore renderFinished;
-	};
-
-	std::vector <GraphicSemaphores> graphicSemaphores;
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void createSemaphores() {
-
-		graphicSemaphores.resize(settings.maxBufferedImages);
-
-		VkSemaphoreCreateInfo semaphoreCreateInfo{};
-		semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
-			if (vkCreateSemaphore(vkLogicalDevice, &semaphoreCreateInfo, nullptr, &graphicSemaphores[i].imageAvailable) != VK_SUCCESS ||
-				vkCreateSemaphore(vkLogicalDevice, &semaphoreCreateInfo, nullptr, &graphicSemaphores[i].renderFinished) != VK_SUCCESS) {
-
-				throw std::runtime_error("failed to create graphic semaphores");
-			}
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct SwapchainFences {
-		VkFence imagesInFlight;
-	};
-	std::vector<SwapchainFences> swapchainFences;
-
-	struct GraphicFences {
-		VkFence renderFence;
-	};
-	std::vector<GraphicFences> graphicFences;
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void createFences() {
-		graphicFences.resize(settings.maxBufferedImages);
-
-		VkFenceCreateInfo fenceCreateInfo{};
-		fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-		fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
-			if (vkCreateFence(vkLogicalDevice, &fenceCreateInfo, nullptr, &graphicFences[i].renderFence) != VK_SUCCESS) {
-				throw std::runtime_error("Failed to create graphic fences");
-			}
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		commandBuffer functions
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void recordCommandBuffers() {
-
-		VkCommandBufferBeginInfo graphicBufferBeginInfo{};
-		graphicBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		graphicBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-
-		VkRenderPassBeginInfo renderPassBeginInfo{};
-		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassBeginInfo.renderPass = renderPass.getRenderPasses().main;
-		renderPassBeginInfo.renderArea.offset = { 0, 0 };
-		renderPassBeginInfo.renderArea.extent = swapchain.getSwapchainDetails().extent2D;
-		VkClearValue clearColor = { 0.65f, 0.6f, 0.4f, 1.0f };
-		renderPassBeginInfo.clearValueCount = 1;
-		renderPassBeginInfo.pClearValues = &clearColor;
-		//renderBeginPassInfo.framebuffer = swapchainFramebuffers[i];
-
-		for (size_t i = 0; i < commandBuffers.graphicsCommandBuffers.size(); i++) {
-
-			renderPassBeginInfo.framebuffer = swapchain.getSwapchainDetails().framebuffers[i];
-
-			if (vkBeginCommandBuffer(commandBuffers.graphicsCommandBuffers[i], &graphicBufferBeginInfo) != VK_SUCCESS) {
-				throw std::runtime_error(std::string("Failed to begin graphics command buffer record, interation :" + i));
-			}
-	
-				vkCmdBeginRenderPass(commandBuffers.graphicsCommandBuffers[i],&renderPassBeginInfo,VK_SUBPASS_CONTENTS_INLINE);
-
-					vkCmdBindPipeline(commandBuffers.graphicsCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);
-
-					vkCmdSetScissor(commandBuffers.graphicsCommandBuffers[i], 0, 1, graphicsPipeline.getViewScissor());
-
-					vkCmdSetViewport(commandBuffers.graphicsCommandBuffers[i], 0, 1, graphicsPipeline.getViewPort());
-
-					vkCmdDraw(commandBuffers.graphicsCommandBuffers[i], 3, 1, 0, 0);
-
-				vkCmdEndRenderPass(commandBuffers.graphicsCommandBuffers[i]);
-			
-			if (vkEndCommandBuffer(commandBuffers.graphicsCommandBuffers[i]) != VK_SUCCESS) {
-				throw std::runtime_error(std::string("Failed to end graphics command buffer record, interation :" + i));
-			}
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct CommandBuffers{
-		std::vector<VkCommandBuffer> graphicsCommandBuffers;
-	};
-
-	CommandBuffers commandBuffers;
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void createCreateCommandBuffers() {
-		commandBuffers.graphicsCommandBuffers.resize(swapchain.getSwapchainDetails().framebuffers.size());
-
-		VkCommandBufferAllocateInfo graphicsCommandBufferAllocateInfo{};
-		graphicsCommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		graphicsCommandBufferAllocateInfo.commandPool = commandPools.graphicsCommandPool;
-		graphicsCommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		graphicsCommandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(swapchain.getSwapchainDetails().framebuffers.size());
-
-		if (vkAllocateCommandBuffers(vkLogicalDevice, &graphicsCommandBufferAllocateInfo, commandBuffers.graphicsCommandBuffers.data()) != VK_SUCCESS) {
-			throw std::runtime_error("Failed to create command buffers");
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		pool functions
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct CommandPools{
-		VkCommandPool graphicsCommandPool;
-	};
-
-	CommandPools commandPools;
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void createGrahpicsCommandPool() {
-
-		VkCommandPoolCreateInfo commandPoolCreateInfo{};
-		commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		commandPoolCreateInfo.queueFamilyIndex = physicalDevice.getQueueFamilyIndices().graphicsFamilyIndex;
-
-		if (vkCreateCommandPool(vkLogicalDevice, &commandPoolCreateInfo, nullptr, &commandPools.graphicsCommandPool) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create command pool!");
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Frame Buffer functions
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-	
-
-	
-
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		runtime functions
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	size_t currentFrame = 0;
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void update() {
 		glfwPollEvents();
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void render() {
 
-		vkWaitForFences(vkLogicalDevice, 1, &graphicFences[currentFrame].renderFence, VK_TRUE, UINT64_MAX);
-		vkResetFences(vkLogicalDevice, 1, &graphicFences[currentFrame].renderFence);
+		vkWaitForFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame), VK_TRUE, UINT64_MAX);
+		vkResetFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame));
 		uint32_t imageIndex;
-		vkAcquireNextImageKHR(vkLogicalDevice, vkSwapchain, UINT64_MAX, graphicSemaphores[currentFrame].imageAvailable, VK_NULL_HANDLE, &imageIndex);
+		vkAcquireNextImageKHR(vkLogicalDevice, vkSwapchain, UINT64_MAX, semaphores.getImagesAvailable(currentFrame), VK_NULL_HANDLE, &imageIndex);
 
-		VkSemaphore waitSemaphores[] = { graphicSemaphores[currentFrame].imageAvailable };
-		VkSemaphore signalSemaphores[] = { graphicSemaphores[currentFrame].renderFinished };
+		VkSemaphore waitSemaphores[] = { semaphores.getImagesAvailable(currentFrame) };
+		VkSemaphore signalSemaphores[] = { semaphores.getRendersFinished(currentFrame) };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 		VkSubmitInfo submitInfo{};
@@ -303,11 +182,11 @@ private:
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffers.graphicsCommandBuffers[imageIndex];
+		submitInfo.pCommandBuffers = commandBuffer.getCommandBufferP(imageIndex);
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
-		if (vkQueueSubmit(logicalDevice.getQueues().graphicsQueue, 1, &submitInfo, graphicFences[currentFrame].renderFence) != VK_SUCCESS) {
+		if (vkQueueSubmit(logicalDevice.getQueues().graphicsQueue, 1, &submitInfo,fences.getGraphicsFence(currentFrame)) != VK_SUCCESS) {
 			throw std::runtime_error("failed to submit draw command buffer!");
 		}
 
@@ -328,8 +207,7 @@ private:
 		}
 		currentFrame = (currentFrame + 1) % settings.maxBufferedImages;
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	void mainLoop() {
 		while (!glfwWindowShouldClose(glfwWindow)) {
 			update();
@@ -337,36 +215,23 @@ private:
 		}
 		vkDeviceWaitIdle(vkLogicalDevice);
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		cleanUp functions
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
+
 	void initCleanUp() {
 
 	}
 
 	void cleanUp() {
 
-		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
-			vkDestroyFence(vkLogicalDevice, graphicFences[i].renderFence, nullptr);
-		}
+		fences.destroy(vkLogicalDevice, settings.maxBufferedImages);
 
-		for (size_t i = 0; i < settings.maxBufferedImages; i++) {
-			vkDestroySemaphore(vkLogicalDevice, graphicSemaphores[i].renderFinished, nullptr);
-			vkDestroySemaphore(vkLogicalDevice, graphicSemaphores[i].imageAvailable, nullptr);
-		}
-		vkDestroyCommandPool(vkLogicalDevice, commandPools.graphicsCommandPool, nullptr);
+		semaphores.destroy(vkLogicalDevice, settings.maxBufferedImages);
 
-		for (auto framebuffer : swapchain.getSwapchainDetails().framebuffers) {
-			vkDestroyFramebuffer(vkLogicalDevice, framebuffer, nullptr);
-		}
-
+		commandPool.destroy(vkLogicalDevice);
 
 		graphicsPipeline.destroy(vkLogicalDevice);
 
-		vkDestroyRenderPass(vkLogicalDevice, renderPass.getRenderPasses().main, nullptr);
+		renderPass.destroy(vkLogicalDevice);
 
 		swapchain.destroy(logicalDevice.getLogicalDevice());
 
@@ -377,5 +242,4 @@ private:
 		instance.destroy(enableValidationLayers);
 
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };
