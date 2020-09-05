@@ -99,14 +99,14 @@
     <SFA>
       <FILEPATH>F:\SparkPlug\SparkPlug\</FILEPATH>
       <FILENAME>GraphicsPipeline.h</FILENAME>
-      <LINE>68</LINE>
+      <LINE>67</LINE>
       <COLUMN>0</COLUMN>
     </SFA>
     <DEFECTCODE>26495</DEFECTCODE>
     <DESCRIPTION>Variable 'GraphicsPipeline::pipeline' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
     <FUNCTION>GraphicsPipeline::{ctor}</FUNCTION>
     <DECORATED>??0GraphicsPipeline@@QEAA@XZ</DECORATED>
-    <FUNCLINE>68</FUNCLINE>
+    <FUNCLINE>67</FUNCLINE>
     <ADDITIONALINFO>
       <targetSymbol>GraphicsPipeline::pipeline</targetSymbol>
     </ADDITIONALINFO>
@@ -115,16 +115,16 @@
     <SFA>
       <FILEPATH>F:\SparkPlug\SparkPlug\</FILEPATH>
       <FILENAME>Renderer.h</FILENAME>
-      <LINE>271</LINE>
+      <LINE>264</LINE>
       <COLUMN>0</COLUMN>
     </SFA>
     <DEFECTCODE>26495</DEFECTCODE>
-    <DESCRIPTION>Variable 'Renderer::graphicsCommandPool' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <DESCRIPTION>Variable 'Renderer::vkInstance' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
     <FUNCTION>Renderer::{ctor}</FUNCTION>
     <DECORATED>??0Renderer@@QEAA@XZ</DECORATED>
-    <FUNCLINE>271</FUNCLINE>
+    <FUNCLINE>264</FUNCLINE>
     <ADDITIONALINFO>
-      <targetSymbol>Renderer::graphicsCommandPool</targetSymbol>
+      <targetSymbol>Renderer::vkInstance</targetSymbol>
     </ADDITIONALINFO>
     <PATH></PATH>
   </DEFECT><DEFECT>

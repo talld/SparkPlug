@@ -14,12 +14,12 @@ inline void CommandBuffer::create(VkDevice vkLogicalDevice, Swapchain swapchain,
 	}
 }
 
-inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline) {
+inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, Mesh mesh) {
 
 	VkCommandBufferBeginInfo graphicBufferBeginInfo{};
 	graphicBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	graphicBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-
+	
 	VkRenderPassBeginInfo renderPassBeginInfo{};
 	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassBeginInfo.renderPass = renderPass.getRenderPasses().main;
@@ -40,13 +40,17 @@ inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, Gr
 
 		vkCmdBeginRenderPass(commandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);
+			VkBuffer vertexBuffer[] = {mesh.getVetexBuffer()};
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffer, offsets);
 
-		vkCmdSetScissor(commandBuffers[i], 0, 1, graphicsPipeline.getViewScissor());
+			vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);
 
-		vkCmdSetViewport(commandBuffers[i], 0, 1, graphicsPipeline.getViewPort());
+			vkCmdSetScissor(commandBuffers[i], 0, 1, graphicsPipeline.getViewScissor());
 
-		vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+			vkCmdSetViewport(commandBuffers[i], 0, 1, graphicsPipeline.getViewPort());
+
+			vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mesh.getVertexCount()), 1, 0, 0);
 
 		vkCmdEndRenderPass(commandBuffers[i]);
 

@@ -172,6 +172,7 @@
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="LogicalDevice.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="PhysicalDevice.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Semaphores.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LogicalDevice.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="PhysicalDevice.h" />
     <ClInclude Include="Renderer.h" />

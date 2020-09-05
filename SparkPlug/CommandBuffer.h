@@ -14,6 +14,7 @@
 #include "Swapchain.h"
 #include "GraphicsPipeline.h"
 #include "CommandPool.h"
+#include "Mesh.h"
 
 class Swapchain;
 
@@ -21,7 +22,7 @@ class CommandPool;
 
 class GraphicsPipeline;
 
-
+class Mesh;
 
 class CommandBuffer
 {
@@ -34,7 +35,7 @@ public:
 
 	void create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCommandPool commandPool);
 
-	void record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline);
+	void record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, Mesh mesh);
 
 	VkCommandBuffer* getCommandBufferP(int index);
 

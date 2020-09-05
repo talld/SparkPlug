@@ -13,93 +13,213 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{cdb3274e-05bb-4467-8619-5482df67a548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{d54b465a-3514-4207-bf17-44752b63e0bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Core">
+      <UniqueIdentifier>{0e8c3318-f8af-4320-919f-6c3ed5d877ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Core">
+      <UniqueIdentifier>{49c353c5-4c37-4d61-bb0f-429bc825ec84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer">
+      <UniqueIdentifier>{a65c7dc2-b5b4-482e-a7e9-6b7dba7f47c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer">
+      <UniqueIdentifier>{3e6d71c8-6676-4475-a5c2-e773724e49d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Commands">
+      <UniqueIdentifier>{9eb0e298-2338-423d-a7dc-ffa809a42826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Commands\CommandBuffer">
+      <UniqueIdentifier>{63b35d33-152a-413d-9d16-48ebb13f61ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Commands\CommandPool">
+      <UniqueIdentifier>{32a5d402-fc7d-4fa5-b741-cad366c3cec5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\GraphicsPipeline">
+      <UniqueIdentifier>{3e8bf5e2-68e7-4bcb-9335-e48081785f65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Commands">
+      <UniqueIdentifier>{6404ee17-c159-42e6-85cc-aff8c47fd637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Commands\CommandBuffer">
+      <UniqueIdentifier>{afb9234a-067f-48c1-836b-73fb807e2201}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Commands\CommandPool">
+      <UniqueIdentifier>{1350b8f4-5be2-417a-a5f9-76c904fdec2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\GraphicsPipeline">
+      <UniqueIdentifier>{d2ebc1a4-7f62-49e4-8c26-e70d4c64e1ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Instance">
+      <UniqueIdentifier>{ab6b1f75-2dca-4a95-b012-16372d82f2ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Instance">
+      <UniqueIdentifier>{c7ee2b35-a348-40c5-9107-2ac36293ba33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\LogicalDevice">
+      <UniqueIdentifier>{6604e831-35fd-4991-8b6c-98992d881eec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\LogicalDevice">
+      <UniqueIdentifier>{dffe81b5-eb72-4f21-ae1f-6465dc241038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\PhysicalDevice">
+      <UniqueIdentifier>{19479029-a204-474c-80bc-46029c83717e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\PhysicalDevice">
+      <UniqueIdentifier>{3a176eef-b412-4a78-b69b-4c495fa88c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\RenderPass">
+      <UniqueIdentifier>{93a1382d-b172-417e-9817-9a1ba5efc763}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\RenderPass">
+      <UniqueIdentifier>{5810b029-cb37-4445-b349-4592eb10d75e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Swapchain">
+      <UniqueIdentifier>{e4fee1fe-a3a3-4475-8a8c-6893d424311f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Swapchain">
+      <UniqueIdentifier>{579b13dc-ee76-4e66-afbe-eaa4ed936271}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Sync">
+      <UniqueIdentifier>{9170ac4a-0317-4430-9ffe-02f9e28e48db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Sync\Fences">
+      <UniqueIdentifier>{8239f914-b8e9-46bc-b10b-8be0d190a02d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Sync\Semaphores">
+      <UniqueIdentifier>{462cd3cd-2ea8-45f9-ba3d-7440b62763df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Sync">
+      <UniqueIdentifier>{a0961fd1-d0ee-44b2-953c-ea6f0362ad88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Sync\Fences">
+      <UniqueIdentifier>{a9acd455-06df-4727-8df3-99c715d334cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Sync\Semaphores">
+      <UniqueIdentifier>{33ddf9ab-8ff6-44fd-8baa-35f238491163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer\Window">
+      <UniqueIdentifier>{837036b1-f1a1-4028-8644-3c96db98f084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Renderer\Window">
+      <UniqueIdentifier>{220eeaff-bfb2-4e3a-9eca-ec8a6d225c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Input">
+      <UniqueIdentifier>{5313ccc7-eb7e-4a58-98ee-ef3746eaeddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Netoworking">
+      <UniqueIdentifier>{ce76a583-d0db-4da4-8731-098985e4f831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Core\Object">
+      <UniqueIdentifier>{e6ac0173-ead2-4f4b-b8c1-1e9eb3adf787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Core\Object\Mesh">
+      <UniqueIdentifier>{4e554ba1-10a6-47f5-8f9f-48668017ea41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Core\Object">
+      <UniqueIdentifier>{deed019c-d207-4a0d-b517-9b0f9428641c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Core\Object\Mesh">
+      <UniqueIdentifier>{b982e468-8385-46b1-b462-d51109b98172}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SparkPlug.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="CommandBuffer.cpp">
+      <Filter>Source Files\Engine\Renderer\Commands\CommandBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandPool.cpp">
+      <Filter>Source Files\Engine\Renderer\Commands\CommandPool</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsPipeline.cpp">
+      <Filter>Source Files\Engine\Renderer\GraphicsPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Instance.cpp">
+      <Filter>Source Files\Engine\Renderer\Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="LogicalDevice.cpp">
+      <Filter>Source Files\Engine\Renderer\LogicalDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicalDevice.cpp">
+      <Filter>Source Files\Engine\Renderer\PhysicalDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>Source Files\Engine\Renderer\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="Swapchain.cpp">
+      <Filter>Source Files\Engine\Renderer\Swapchain</Filter>
+    </ClCompile>
+    <ClCompile Include="Fences.cpp">
+      <Filter>Source Files\Engine\Renderer\Sync\Fences</Filter>
+    </ClCompile>
+    <ClCompile Include="Semaphores.cpp">
+      <Filter>Source Files\Engine\Renderer\Sync\Semaphores</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files\Engine\Renderer\Window</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Instance.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="SparkPlug.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicalDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LogicalDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Swapchain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderPass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsPipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandPool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Semaphores.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Fences.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\Engine\Core\Object\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Network.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Instance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicalDevice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LogicalDevice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Swapchain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderPass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsPipeline.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="CommandBuffer.h">
+      <Filter>Header Files\Engine\Renderer\Commands\CommandBuffer</Filter>
     </ClInclude>
     <ClInclude Include="CommandPool.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Engine\Renderer\Commands\CommandPool</Filter>
     </ClInclude>
-    <ClInclude Include="CommandBuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GraphicsPipeline.h">
+      <Filter>Header Files\Engine\Renderer\GraphicsPipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Semaphores.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Instance.h">
+      <Filter>Header Files\Engine\Renderer\Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="LogicalDevice.h">
+      <Filter>Header Files\Engine\Renderer\LogicalDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicalDevice.h">
+      <Filter>Header Files\Engine\Renderer\PhysicalDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass.h">
+      <Filter>Header Files\Engine\Renderer\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="Swapchain.h">
+      <Filter>Header Files\Engine\Renderer\Swapchain</Filter>
     </ClInclude>
     <ClInclude Include="Fences.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Engine\Renderer\Sync\Fences</Filter>
+    </ClInclude>
+    <ClInclude Include="Semaphores.h">
+      <Filter>Header Files\Engine\Renderer\Sync\Semaphores</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files\Engine\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Header Files\Engine\Netoworking</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Engine\Core\Object\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

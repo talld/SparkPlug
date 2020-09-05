@@ -48,6 +48,8 @@
 #include "Semaphores.h"
 #include "Semaphores.cpp"
 
+#include "Mesh.h"
+#include "Mesh.cpp"
 
 /*TODO: 
 	Memory allocator
@@ -68,6 +70,8 @@ class Renderer
 {
 
 public:
+
+
 
 	struct Settings {
 		int maxBufferedImages;
@@ -124,6 +128,8 @@ private:
 	Semaphores semaphores;
 	Fences fences;
 
+	Mesh mesh;
+
 	int currentFrame = 0;
 
 	void initVulkan() {
@@ -147,12 +153,23 @@ private:
 		graphicsPipeline.create(vkLogicalDevice,swapchain,renderPass);
 
 		swapchain.create(vkLogicalDevice,renderPass);
+
+		std::vector<Vertex> meshVertices = {
+	{{0.0, -0.4, 0.0}, {1.0f,0.0f,0.0f}},
+	{{0.4, 0.4, 0.0}, {0.0f, 1.0f, 0.0f}},
+	{{-0.4, 0.4, 0.0}, {0.0f, 0.0f, 1.0f}}
+		};
+
+		mesh.create(vkPhysicalDevice, vkLogicalDevice, &meshVertices);
+
 		commandPool.create(physicalDevice, vkLogicalDevice);
 		graphicsCommandPool = commandPool.getCommandPools().graphicsCommandPool;
 		commandBuffer.create(vkLogicalDevice,swapchain,graphicsCommandPool);
-		commandBuffer.record(swapchain,renderPass,graphicsPipeline);
+		commandBuffer.record(swapchain,renderPass,graphicsPipeline, mesh);
 		semaphores.create(vkLogicalDevice, settings.maxBufferedImages);
 		fences.create(vkLogicalDevice, settings.maxBufferedImages);
+
+
 		initCleanUp();
 	}
 
@@ -222,6 +239,8 @@ private:
 	}
 
 	void cleanUp() {
+
+		mesh.destroy();
 
 		fences.destroy(vkLogicalDevice, settings.maxBufferedImages);
 

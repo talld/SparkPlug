@@ -42,11 +42,14 @@ inline std::vector<char> GraphicsPipeline::readFile(const std::string& filename)
 
 inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass) {
 
+
 	auto vertexShaderCode = readFile("Shaders/vert.spv");
 	auto fragmentShaderCode = readFile("Shaders/frag.spv");
 
+
 	VkShaderModule vertexShaderModule = createShadeModule(vkLogicalDevice, vertexShaderCode);
 	VkShaderModule fragmentShaderModule = createShadeModule(vkLogicalDevice, fragmentShaderCode);
+
 
 	VkPipelineShaderStageCreateInfo vertexShaderStageCreateInfo{};
 	vertexShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -54,29 +57,51 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	vertexShaderStageCreateInfo.module = vertexShaderModule;
 	vertexShaderStageCreateInfo.pName = "main"; //pointer to the entry point of shader code
 
+
 	VkPipelineShaderStageCreateInfo fragShaderStageCreateInfo{};
 	fragShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageCreateInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
 	fragShaderStageCreateInfo.module = fragmentShaderModule;
 	fragShaderStageCreateInfo.pName = "main";
 
+
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertexShaderStageCreateInfo, fragShaderStageCreateInfo };
+
+	VkVertexInputBindingDescription vertexInputBindingDescription{};
+	vertexInputBindingDescription.binding = 0;
+	vertexInputBindingDescription.stride = sizeof(Vertex);
+	vertexInputBindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+	std::array<VkVertexInputAttributeDescription, 2> vertexInputAttributeDescription;
+
+	vertexInputAttributeDescription[0].binding = 0;
+	vertexInputAttributeDescription[0].location = 0;
+	vertexInputAttributeDescription[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+	vertexInputAttributeDescription[0].offset = offsetof(Vertex, position); //auto dectects the memory offset for the member variable in the struct
+
+	vertexInputAttributeDescription[1].binding = 0;
+	vertexInputAttributeDescription[1].location = 1;
+	vertexInputAttributeDescription[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+	vertexInputAttributeDescription[1].offset = offsetof(Vertex, color);
 
 	VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{};
 	vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputCreateInfo.vertexBindingDescriptionCount = 0;
-	vertexInputCreateInfo.pVertexBindingDescriptions = nullptr;
-	vertexInputCreateInfo.vertexAttributeDescriptionCount = 0;
-	vertexInputCreateInfo.pVertexAttributeDescriptions = nullptr;
+	vertexInputCreateInfo.vertexBindingDescriptionCount = 1;
+	vertexInputCreateInfo.pVertexBindingDescriptions = &vertexInputBindingDescription;
+	vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertexInputAttributeDescription.size());
+	vertexInputCreateInfo.pVertexAttributeDescriptions = vertexInputAttributeDescription.data();
+
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
 	inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
 
+
 	VkPipelineViewportStateCreateInfo viewPortCreateInfo{};
 	viewPortCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewPortCreateInfo.viewportCount = 1;
+
 
 	view.viewPort.x = 0.0f;
 	view.viewPort.y = 0.0f;
@@ -85,14 +110,19 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	view.viewPort.minDepth = 0.0f;
 	view.viewPort.maxDepth = 1.0f;
 
+
 	viewPortCreateInfo.pViewports = &view.viewPort;
 
+
 	viewPortCreateInfo.scissorCount = 1;
+
 
 	view.scissor.offset = { 0,0 };
 	view.scissor.extent = swapchain.getSwapchainDetails().extent2D;
 
+
 	viewPortCreateInfo.pScissors = &view.scissor;
+
 
 	VkPipelineRasterizationStateCreateInfo rasterizerCreateInfo{};
 	rasterizerCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -107,6 +137,7 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	rasterizerCreateInfo.depthBiasClamp = 0.0f;
 	rasterizerCreateInfo.depthBiasSlopeFactor = 0.0f;
 
+
 	VkPipelineMultisampleStateCreateInfo multisamplingCreateInfo{};
 	multisamplingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	multisamplingCreateInfo.sampleShadingEnable = VK_FALSE;
@@ -116,7 +147,9 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	multisamplingCreateInfo.alphaToCoverageEnable = VK_FALSE;
 	multisamplingCreateInfo.alphaToOneEnable = VK_FALSE;
 
+
 	//TODO: depth buffing
+
 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -127,6 +160,7 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 	colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 	colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
 
 	VkPipelineColorBlendStateCreateInfo colorBlending{};
 	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -139,10 +173,12 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	colorBlending.blendConstants[2] = 0.0f; // Optional
 	colorBlending.blendConstants[3] = 0.0f; // Optional
 
+
 	VkDynamicState dynamicStates[] = {
 		VK_DYNAMIC_STATE_VIEWPORT,
 		VK_DYNAMIC_STATE_SCISSOR
 	};
+
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -151,14 +187,17 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
+
 	if (vkCreatePipelineLayout(vkLogicalDevice, &pipelineLayoutInfo, nullptr, &pipeline.layout) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create pipeline layout");
 	}
+
 
 	VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo{};
 	dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	dynamicStateCreateInfo.dynamicStateCount = 2;
 	dynamicStateCreateInfo.pDynamicStates = dynamicStates;
+
 
 	VkGraphicsPipelineCreateInfo pipeLineCreateInfo{};
 	pipeLineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
