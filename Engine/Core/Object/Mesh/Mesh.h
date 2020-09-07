@@ -13,7 +13,7 @@
 #include <optional>
 #include <fstream>
 #include <glm/glm.hpp>
-#include "GraphicsPipeline.h"
+#include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
 
 
 

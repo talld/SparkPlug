@@ -86,7 +86,7 @@ inline VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkIma
 	return imageView;
 }
 
-inline void Swapchain::create(VkDevice vkLogicalDevice, RenderPass renderPass) {
+inline void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass) {
 	swapchainDetails.framebuffers.resize(swapchainDetails.swapchainImages.size());
 
 	for (size_t i = 0; i < swapchainDetails.framebuffers.size(); i++) {

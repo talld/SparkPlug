@@ -11,9 +11,9 @@
 #include <array>
 #include <optional>
 #include <fstream>
-#include "LogicalDevice.h"
-#include "Window.h"
-#include "RenderPass.h"
+#include <Renderer/LogicalDevice/LogicalDevice.h>
+#include <Renderer/Window/Window.h>
+#include <Renderer/RenderPass/RenderPass.h>
 
 class Instnace;
 
@@ -61,7 +61,7 @@ private:
 public:
 
 
-	void create(VkDevice vkLogicalDevice, RenderPass renderPass);
+	void createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass);
 
 
 	void create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window);

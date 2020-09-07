@@ -14,42 +14,43 @@
 #include <optional>
 #include <fstream>
 
-#include "Instance.h"
-#include "Instance.cpp"
+#include <Renderer/Instance/Instance.h>
+#include <Renderer/Instance/Instance.cpp>
 
-#include "Window.h"
-#include "Window.cpp"
+#include <Renderer/Window/Window.h>
+#include <Renderer/Window/Window.cpp>
 
-#include "PhysicalDevice.h"
-#include "PhysicalDevice.cpp"
+#include <Renderer/PhysicalDevice/PhysicalDevice.h>
+#include <Renderer/PhysicalDevice/PhysicalDevice.cpp>
 
-#include "LogicalDevice.h"
-#include "LogicalDevice.cpp"
+#include <Renderer/LogicalDevice/LogicalDevice.h>
+#include <Renderer/LogicalDevice/LogicalDevice.cpp>
 
-#include "Swapchain.h"
-#include "Swapchain.cpp"
+#include <Renderer/Swapchain/Swapchain.h>
+#include <Renderer/Swapchain/Swapchain.cpp>
 
-#include "RenderPass.h"
-#include "RenderPass.cpp"
+#include <Renderer/RenderPass/RenderPass.h>
+#include <Renderer/RenderPass/RenderPass.cpp>
+
+#include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
+#include <Renderer/GraphicsPipeline/GraphicsPipeline.cpp>
+
+#include <Renderer/Command/CommandPool/CommandPool.h>
+#include <Renderer/Command/CommandPool/CommandPool.cpp>
+
+#include <Renderer/Command/CommandBuffer/CommandBuffer.h>
+#include <Renderer/Command/CommandBuffer/CommandBuffer.cpp>
+
+#include <Renderer/Sync/Fences/Fences.h>
+#include <Renderer/Sync/Fences/Fences.cpp>
+
+#include <Renderer/Sync/Semaphores/Semaphores.h>
+#include <Renderer/Sync/Semaphores/Semaphores.cpp>
 
 
-#include "GraphicsPipeline.h"
-#include "GraphicsPipeline.cpp"
+#include <Core/Object/Mesh/Mesh.h>
+#include <Core/Object/Mesh/Mesh.cpp>
 
-#include "CommandPool.h"
-#include "CommandPool.cpp"
-
-#include "CommandBuffer.h"
-#include "CommandBuffer.cpp"
-
-#include "Fences.h"
-#include "Fences.cpp"
-
-#include "Semaphores.h"
-#include "Semaphores.cpp"
-
-#include "Mesh.h"
-#include "Mesh.cpp"
 
 /*TODO: 
 	Memory allocator
@@ -118,6 +119,7 @@ private:
 	Swapchain swapchain;
 	VkSwapchainKHR vkSwapchain;
 
+
 	RenderPass renderPass;
 	GraphicsPipeline graphicsPipeline;
 
@@ -147,12 +149,12 @@ private:
 
 		swapchain.create(physicalDevice,logicalDevice, surface, window);
 		vkSwapchain = swapchain.getSwapchain();
-
 		renderPass.create(vkLogicalDevice,swapchain);
 
-		graphicsPipeline.create(vkLogicalDevice,swapchain,renderPass);
+		
+		graphicsPipeline.create(vkLogicalDevice, swapchain, renderPass);
 
-		swapchain.create(vkLogicalDevice,renderPass);
+		swapchain.createFrameBuffers(vkLogicalDevice, renderPass);
 
 		std::vector<Vertex> meshVertices = {
 	{{0.0, -0.4, 0.0}, {1.0f,0.0f,0.0f}},

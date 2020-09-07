@@ -11,10 +11,10 @@
 #include <array>
 #include <optional>
 #include <fstream>
-#include "Swapchain.h"
-#include "GraphicsPipeline.h"
-#include "CommandPool.h"
-#include "Mesh.h"
+#include <Renderer/Swapchain/Swapchain.h>
+#include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
+#include <Renderer/Command/CommandPool/CommandPool.h>
+#include <Core/Object/Mesh/Mesh.h>
 
 class Swapchain;
 
