@@ -21,14 +21,15 @@ class Window {
 private:
 	GLFWwindow* window;
 	VkSurfaceKHR surface;
+	bool resized = false;
 
 public:
 
 
-	const uint32_t WIDTH = 1024;
-	const uint32_t HEIGHT = 720;
+	 uint32_t WIDTH = 1024;
+	 uint32_t HEIGHT = 720;
 
-	void init();
+	void create();
 
 	void createSurface(VkInstance vkInstance);
 

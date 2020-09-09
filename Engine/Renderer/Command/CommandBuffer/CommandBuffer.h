@@ -35,12 +35,16 @@ public:
 
 	void create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCommandPool commandPool);
 
-	void record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, Mesh mesh);
+	void record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, std::vector<Mesh> meshes);
 
 	VkCommandBuffer* getCommandBufferP(int index);
 
 	VkCommandBuffer getCommandBuffer(int index);
 
 	std::vector<VkCommandBuffer> getCommandBuffers();
+
+	void destroy(VkDevice vkLogicalDevice, VkCommandPool vkCommandPool) {
+		vkFreeCommandBuffers(vkLogicalDevice, vkCommandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+	}
 };
 

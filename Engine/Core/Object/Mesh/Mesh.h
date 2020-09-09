@@ -24,6 +24,12 @@ private:
 	int vertexCount;
 	VkBuffer vertexBuffer;
 	VkDeviceMemory vertexMemory;
+
+
+	int indexCount;
+	VkBuffer indexBuffer;
+	VkDeviceMemory indexMemory;
+
 	VkPhysicalDevice vkPhysicalDevice;
 	VkDevice vkLogicalDevice;
 	VkQueue transferQueue;
@@ -31,13 +37,19 @@ private:
 
 	VkBuffer createVertexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices);
 
+	VkBuffer createIndexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<uint32_t>* indices);
+
 public:
 
 
 
-	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices);
+	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
 
-	void create(std::vector<Vertex>* vertices);
+	void create(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
+
+	int getIndexCount();
+
+	VkBuffer getIndexBuffer();
 
 	int getVertexCount();
 

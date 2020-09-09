@@ -57,7 +57,6 @@
 	vertexShaderStageCreateInfo.module = vertexShaderModule;
 	vertexShaderStageCreateInfo.pName = "main"; //pointer to the entry point of shader code
 
-
 	VkPipelineShaderStageCreateInfo fragShaderStageCreateInfo{};
 	fragShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageCreateInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -71,6 +70,7 @@
 	vertexInputBindingDescription.binding = 0;
 	vertexInputBindingDescription.stride = sizeof(Vertex);
 	vertexInputBindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
 
 	std::array<VkVertexInputAttributeDescription, 2> vertexInputAttributeDescription;
 

@@ -14,7 +14,7 @@ inline void CommandBuffer::create(VkDevice vkLogicalDevice, Swapchain swapchain,
 	}
 }
 
-inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, Mesh mesh) {
+inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, std::vector<Mesh> meshes) {
 
 	VkCommandBufferBeginInfo graphicBufferBeginInfo{};
 	graphicBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -39,10 +39,12 @@ inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, Gr
 		}
 
 		vkCmdBeginRenderPass(commandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-			VkBuffer vertexBuffer[] = {mesh.getVetexBuffer()};
+		for (size_t j = 0; j < meshes.size(); j++) {
+			VkBuffer vertexBuffer[] = { meshes[j].getVetexBuffer() };
 			VkDeviceSize offsets[] = { 0 };
 			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffer, offsets);
+
+			vkCmdBindIndexBuffer(commandBuffers[i], meshes[j].getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 			vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);
 
@@ -50,8 +52,8 @@ inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, Gr
 
 			vkCmdSetViewport(commandBuffers[i], 0, 1, graphicsPipeline.getViewPort());
 
-			vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(mesh.getVertexCount()), 1, 0, 0);
-
+			vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(meshes[j].getIndexCount()), 1, 0, 0, 0);
+		}
 		vkCmdEndRenderPass(commandBuffers[i]);
 
 		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
