@@ -1,62 +1,51 @@
 #include "Mesh.h"
 
-inline VkBuffer Mesh::createVertexBuffer(std::vector<Vertex>* vertices) {
-	VkBufferCreateInfo bufferCreateInfo{};
-	bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	bufferCreateInfo.size = sizeof(Vertex) * vertices->size();
-	bufferCreateInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-	bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+inline VkBuffer Mesh::createVertexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices) {
 
-	if (vkCreateBuffer(vkLogicalDevice, &bufferCreateInfo, nullptr, &vertexBuffer)) {
-		throw std::runtime_error("Failed to create Buffer");
-	}
 
-	VkMemoryRequirements memoryRequirements;
-	vkGetBufferMemoryRequirements(vkLogicalDevice, vertexBuffer, &memoryRequirements);
+	VkDeviceSize bufferSize = sizeof(Vertex) * vertices->size();
 
-	VkMemoryAllocateInfo memoryAllocateInfo{};
-	memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	memoryAllocateInfo.allocationSize  = memoryRequirements.size;
-	memoryAllocateInfo.memoryTypeIndex = getMemoryTypeIndex(memoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT); //TODO: device memory flushes
+	// temp SRC buffer
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingMemory;
 
-	if (vkAllocateMemory(vkLogicalDevice, &memoryAllocateInfo, nullptr, &vertexMemory)) {
-		throw std::runtime_error("Failed to allocate memory for vertex buffer");
-	}
+	createBuffer(vkPhysicalDevice, vkLogicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingMemory);
 
-	vkBindBufferMemory(vkLogicalDevice, vertexBuffer, vertexMemory, 0);
 
+	//cpu data move to src buffer
 	void* data; 
-	vkMapMemory(vkLogicalDevice, vertexMemory, 0, bufferCreateInfo.size, 0, &data);
-	memcpy(data, vertices->data(), (size_t)bufferCreateInfo.size);
-	vkUnmapMemory(vkLogicalDevice, vertexMemory);
+	vkMapMemory(vkLogicalDevice, stagingMemory, 0, bufferSize, 0, &data);
+	memcpy(data, vertices->data(), (size_t)bufferSize);
+	vkUnmapMemory(vkLogicalDevice, stagingMemory);
 
-	//TODO: flushing here
+	//write only dst vertex buffer
+	createBuffer(vkPhysicalDevice, vkLogicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT , &vertexBuffer, &vertexMemory);
+
+
+	//TODO: device memory flushing here
+
+	moveBuffer(vkLogicalDevice, transferQueue, transferCommandPool, stagingBuffer, vertexBuffer, bufferSize);
+
+	vkDestroyBuffer(vkLogicalDevice, stagingBuffer, nullptr);
+	vkFreeMemory(vkLogicalDevice, stagingMemory, nullptr);
 
 	return vertexBuffer;
 }
 
-inline uint32_t Mesh::getMemoryTypeIndex(uint32_t allowedTypes, VkMemoryPropertyFlags memoryPropertyFlags) {
-	VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
-	vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, &physicalDeviceMemoryProperties);
 
-	for (uint32_t i = 0; i < physicalDeviceMemoryProperties.memoryTypeCount; i++) {
-		if ((allowedTypes & (1 << i)) && physicalDeviceMemoryProperties.memoryTypes[i].propertyFlags & memoryPropertyFlags) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-inline void Mesh::create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, std::vector<Vertex>* vertices)
+inline void Mesh::create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices)
 {
+	this->transferQueue = transferQueue;
+	this->transferCommandPool = transferCommandPool;
 	this->vkPhysicalDevice = vkPhysicalDevice;
 	this->vkLogicalDevice = vkLogicalDevice;
+
 	create(vertices);
 }
 
 inline void Mesh::create(std::vector<Vertex>* vertices) {
 	vertexCount = vertices->size();
-	this->vertexBuffer = createVertexBuffer(vertices);
+	this->vertexBuffer = createVertexBuffer(transferQueue, transferCommandPool, vertices);
 
 }
 
@@ -73,4 +62,5 @@ inline void Mesh::destroy() {
 	vkDestroyBuffer(vkLogicalDevice, vertexBuffer, nullptr);
 
 	vkFreeMemory(vkLogicalDevice, vertexMemory, nullptr);
+
 }

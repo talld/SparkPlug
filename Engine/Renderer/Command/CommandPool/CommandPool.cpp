@@ -1,6 +1,6 @@
 #include "CommandPool.h"
 
-inline void CommandPool::create(PhysicalDevice physicalDevice, VkDevice vkLogicalDevice) {
+ void CommandPool::create(PhysicalDevice physicalDevice, VkDevice vkLogicalDevice) {
 
 	VkCommandPoolCreateInfo commandPoolCreateInfo{};
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -11,10 +11,10 @@ inline void CommandPool::create(PhysicalDevice physicalDevice, VkDevice vkLogica
 	}
 }
 
-inline CommandPools CommandPool::getCommandPools() {
+ CommandPools CommandPool::getCommandPools() {
 	return commandPools;
 }
 
-inline void CommandPool::destroy(VkDevice vkLogicalDevice) {
+ void CommandPool::destroy(VkDevice vkLogicalDevice) {
 	vkDestroyCommandPool(vkLogicalDevice, commandPools.graphicsCommandPool, nullptr);
 }

@@ -1,6 +1,6 @@
 #include "Swapchain.h"
 
-inline VkExtent2D Swapchain::selectSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, Window window) {
+ VkExtent2D Swapchain::selectSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, Window window) {
 	if (surfaceCapabilities.currentExtent.width != UINT32_MAX) {
 		return surfaceCapabilities.currentExtent;
 	}
@@ -14,7 +14,7 @@ inline VkExtent2D Swapchain::selectSwapExtent(const VkSurfaceCapabilitiesKHR& su
 	}
 }
 
-inline VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPresentModeKHR> presentModes) {
+ VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPresentModeKHR> presentModes) {
 	for (const auto& presentMode : presentModes) {
 		if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
 			return presentMode;
@@ -24,7 +24,7 @@ inline VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPres
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-inline VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
+ VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
 
 	VkFormat chosenFormat = availableFormats[0].format;
 
@@ -44,7 +44,7 @@ inline VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR format, std:
 	return chosenFormat;
 }
 
-inline VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
+VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
 	for (const auto& availableFormat : availableFormats) {
 		if (availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 			return VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -53,7 +53,7 @@ inline VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR f
 	return availableFormats[0].colorSpace;
 }
 
-inline VkSurfaceFormatKHR Swapchain::selectSwapchainSurfaceFormat(std::vector<VkSurfaceFormatKHR> availableFormats) {
+ VkSurfaceFormatKHR Swapchain::selectSwapchainSurfaceFormat(std::vector<VkSurfaceFormatKHR> availableFormats) {
 
 	VkSurfaceFormatKHR format{};
 
@@ -63,7 +63,7 @@ inline VkSurfaceFormatKHR Swapchain::selectSwapchainSurfaceFormat(std::vector<Vk
 	return format;
 }
 
-inline VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
+ VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
 	VkImageViewCreateInfo imageViewCreateInfo{};
 	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	imageViewCreateInfo.image = image;
@@ -86,7 +86,7 @@ inline VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkIma
 	return imageView;
 }
 
-inline void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass) {
+ void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass) {
 	swapchainDetails.framebuffers.resize(swapchainDetails.swapchainImages.size());
 
 	for (size_t i = 0; i < swapchainDetails.framebuffers.size(); i++) {
@@ -111,7 +111,7 @@ inline void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass r
 	}
 }
 
-inline void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window) {
+ void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window) {
 	auto swapChainSupport = physicalDevice.getSurfaceSwapchainSupport(physicalDevice.getPhysicalDevice(), surface);
 
 	VkSurfaceFormatKHR format = selectSwapchainSurfaceFormat(swapChainSupport.formats);
@@ -174,15 +174,15 @@ inline void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logic
 
 }
 
-inline VkSwapchainKHR Swapchain::getSwapchain() {
+ VkSwapchainKHR Swapchain::getSwapchain() {
 	return vkSwapchain;
 }
 
-inline SwapchainDetails Swapchain::getSwapchainDetails() {
+ SwapchainDetails Swapchain::getSwapchainDetails() {
 	return swapchainDetails;
 }
 
-inline void Swapchain::destroy(VkDevice vkLogicalDevice) {
+ void Swapchain::destroy(VkDevice vkLogicalDevice) {
 
 	for (auto framebuffer : swapchainDetails.framebuffers) {
 		vkDestroyFramebuffer(vkLogicalDevice, framebuffer, nullptr);

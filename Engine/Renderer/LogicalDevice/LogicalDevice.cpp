@@ -1,6 +1,6 @@
 #include "LogicalDevice.h"
 
-inline void LogicalDevice::create(PhysicalDevice physicalDevice) {
+void LogicalDevice::create(PhysicalDevice physicalDevice) {
 
 	const std::vector<const char*> physicalDeviceExtensions = physicalDevice.getDeviceExtensions();
 
@@ -36,14 +36,14 @@ inline void LogicalDevice::create(PhysicalDevice physicalDevice) {
 	vkGetDeviceQueue(vkLogicalDevice, physicalDevice.getQueueFamilyIndices().presentationFamilyIndex, 0, &queues.presentationQueue);
 }
 
-inline VkDevice LogicalDevice::getLogicalDevice() {
+VkDevice LogicalDevice::getLogicalDevice() {
 	return vkLogicalDevice;
 }
 
-inline Queues LogicalDevice::getQueues() {
+Queues LogicalDevice::getQueues() {
 	return queues;
 }
 
-inline void LogicalDevice::destory() {
+void LogicalDevice::destory() {
 	vkDestroyDevice(vkLogicalDevice, nullptr);
 }

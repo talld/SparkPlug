@@ -1,6 +1,6 @@
 #include "Window.h"
 
-inline void Window::init() {
+ void Window::init() {
 	glfwInit();
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -9,7 +9,7 @@ inline void Window::init() {
 	window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
 }
 
-inline void Window::createSurface(VkInstance vkInstance) {
+ void Window::createSurface(VkInstance vkInstance) {
 
 	if (glfwCreateWindowSurface(vkInstance, window, nullptr, &surface)) {
 		throw std::runtime_error("Failed to create window surface");
@@ -17,19 +17,19 @@ inline void Window::createSurface(VkInstance vkInstance) {
 
 }
 
-inline void Window::update() {
+ void Window::update() {
 
 }
 
-inline GLFWwindow* Window::getWindow() {
+ GLFWwindow* Window::getWindow() {
 	return window;
 }
 
-inline VkSurfaceKHR Window::getSurface() {
+ VkSurfaceKHR Window::getSurface() {
 	return surface;
 }
 
-inline void Window::destroy(VkInstance vkInstance) {
+ void Window::destroy(VkInstance vkInstance) {
 	vkDestroySurfaceKHR(vkInstance, surface, nullptr);
 	glfwDestroyWindow(window);
 	glfwTerminate();

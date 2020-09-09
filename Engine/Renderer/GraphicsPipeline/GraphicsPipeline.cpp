@@ -1,6 +1,6 @@
 #include "GraphicsPipeline.h"
 
-inline VkShaderModule GraphicsPipeline::createShadeModule(VkDevice logicalDevice, std::vector<char>& code) {
+ VkShaderModule GraphicsPipeline::createShadeModule(VkDevice logicalDevice, std::vector<char>& code) {
 	VkShaderModuleCreateInfo shaderModuleCreateInfo{};
 	shaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	shaderModuleCreateInfo.codeSize = code.size();
@@ -22,7 +22,7 @@ inline VkShaderModule GraphicsPipeline::createShadeModule(VkDevice logicalDevice
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline std::vector<char> GraphicsPipeline::readFile(const std::string& filename) {
+ std::vector<char> GraphicsPipeline::readFile(const std::string& filename) {
 	std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
 	if (!file.is_open()) {
@@ -40,7 +40,7 @@ inline std::vector<char> GraphicsPipeline::readFile(const std::string& filename)
 	return buffer;
 }
 
-inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass) {
+ void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass) {
 
 
 	auto vertexShaderCode = readFile("Shaders/vert.spv");
@@ -223,19 +223,19 @@ inline void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapcha
 	vkDestroyShaderModule(vkLogicalDevice, fragmentShaderModule, nullptr);
 }
 
-inline Pipeline GraphicsPipeline::getPipeline() {
+ Pipeline GraphicsPipeline::getPipeline() {
 	return pipeline;
 }
 
-inline VkRect2D* GraphicsPipeline::getViewScissor() {
+ VkRect2D* GraphicsPipeline::getViewScissor() {
 	return &view.scissor;
 }
 
-inline VkViewport* GraphicsPipeline::getViewPort() {
+ VkViewport* GraphicsPipeline::getViewPort() {
 	return &view.viewPort;
 }
 
-inline void GraphicsPipeline::destroy(VkDevice vkLogicalDevice) {
+ void GraphicsPipeline::destroy(VkDevice vkLogicalDevice) {
 	vkDestroyPipeline(vkLogicalDevice, pipeline.graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(vkLogicalDevice, pipeline.layout, nullptr);
 }

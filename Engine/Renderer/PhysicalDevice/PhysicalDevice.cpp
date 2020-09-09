@@ -1,6 +1,6 @@
 #include "PhysicalDevice.h"
 
-inline int PhysicalDevice::getDeviceScore(VkPhysicalDevice vkPhysicalDevice) {
+ int PhysicalDevice::getDeviceScore(VkPhysicalDevice vkPhysicalDevice) {
 
 	int score = -1;
 
@@ -18,12 +18,12 @@ inline int PhysicalDevice::getDeviceScore(VkPhysicalDevice vkPhysicalDevice) {
 	return score;
 }
 
-inline bool PhysicalDevice::checkDeviceSwapChain(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+ bool PhysicalDevice::checkDeviceSwapChain(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 	SwapChainSupportDetails  swapChainSupport = getSurfaceSwapchainSupport(vkPhysicalDevice, surface);
 	return !swapChainSupport.presentModes.empty() && !swapChainSupport.formats.empty();
 }
 
-inline bool PhysicalDevice::checkPhysicalDeviceQueues(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+ bool PhysicalDevice::checkPhysicalDeviceQueues(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 
 	QueueFamilyIndices testedIndices = getQueueFamiles(vkPhysicalDevice, surface);
 	if (testedIndices.validate()) {
@@ -32,7 +32,7 @@ inline bool PhysicalDevice::checkPhysicalDeviceQueues(VkPhysicalDevice vkPhysica
 	return false;
 }
 
-inline bool PhysicalDevice::checkPhysicalDeviceExtemsions(VkPhysicalDevice vkPhysicalDevice, bool enableValidationLayers) {
+ bool PhysicalDevice::checkPhysicalDeviceExtemsions(VkPhysicalDevice vkPhysicalDevice, bool enableValidationLayers) {
 	uint32_t extensionCount = 0;
 	vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, nullptr, &extensionCount, nullptr);
 
@@ -64,23 +64,23 @@ inline bool PhysicalDevice::checkPhysicalDeviceExtemsions(VkPhysicalDevice vkPhy
 	return true;
 }
 
-inline bool PhysicalDevice::checkPhysicalDeviceCompatible(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface, bool enableValidationLayers) {
+ bool PhysicalDevice::checkPhysicalDeviceCompatible(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface, bool enableValidationLayers) {
 	return (checkPhysicalDeviceExtemsions(vkPhysicalDevice, enableValidationLayers) && checkPhysicalDeviceQueues(vkPhysicalDevice, surface) && checkDeviceSwapChain(vkPhysicalDevice, surface));
 }
 
-inline std::vector<const char*> PhysicalDevice::getDeviceExtensions() {
+ std::vector<const char*> PhysicalDevice::getDeviceExtensions() {
 	return physicalDeviceExtensions;
 }
 
-inline QueueFamilyIndices PhysicalDevice::getQueueFamilyIndices() {
+ QueueFamilyIndices PhysicalDevice::getQueueFamilyIndices() {
 	return indices;
 }
 
-inline VkPhysicalDevice PhysicalDevice::getPhysicalDevice() {
+ VkPhysicalDevice PhysicalDevice::getPhysicalDevice() {
 	return device;
 }
 
-inline SwapChainSupportDetails PhysicalDevice::getSurfaceSwapchainSupport(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+ SwapChainSupportDetails PhysicalDevice::getSurfaceSwapchainSupport(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 	SwapChainSupportDetails supportDetails;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, surface, &supportDetails.capabilities);
@@ -104,7 +104,7 @@ inline SwapChainSupportDetails PhysicalDevice::getSurfaceSwapchainSupport(VkPhys
 	return supportDetails;
 }
 
-inline void PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers) {
+ void PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers) {
 
 	uint32_t physDeviceCount = 0; //physical device count
 	vkEnumeratePhysicalDevices(vkInstance, &physDeviceCount, nullptr);
@@ -151,7 +151,7 @@ inline void PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, 
 	indices = getQueueFamiles(device, surface);
 }
 
-inline QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+ QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 	QueueFamilyIndices deviceQueueFamilyIndices;
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &queueFamilyCount, nullptr);

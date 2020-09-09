@@ -14,7 +14,7 @@
 #include <fstream>
 #include <glm/glm.hpp>
 #include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
-
+#include <Utilities/Memory/MemoryUtilities.h>
 
 
 class Mesh
@@ -23,21 +23,19 @@ private:
 
 	int vertexCount;
 	VkBuffer vertexBuffer;
-
 	VkDeviceMemory vertexMemory;
-
 	VkPhysicalDevice vkPhysicalDevice;
 	VkDevice vkLogicalDevice;
+	VkQueue transferQueue;
+	VkCommandPool transferCommandPool;
 
-	VkBuffer createVertexBuffer(std::vector<Vertex>* vertices);
-
-	uint32_t getMemoryTypeIndex(uint32_t allowedTypes, VkMemoryPropertyFlags memoryPropertyFlags);
+	VkBuffer createVertexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices);
 
 public:
 
 
 
-	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, std::vector<Vertex>* vertices);
+	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices);
 
 	void create(std::vector<Vertex>* vertices);
 

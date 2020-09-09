@@ -15,28 +15,13 @@
 #include <fstream>
 
 #include <Renderer/Instance/Instance.h>
-#include <Renderer/Instance/Instance.cpp>
-
 #include <Renderer/Window/Window.h>
-#include <Renderer/Window/Window.cpp>
-
 #include <Renderer/PhysicalDevice/PhysicalDevice.h>
-#include <Renderer/PhysicalDevice/PhysicalDevice.cpp>
-
 #include <Renderer/LogicalDevice/LogicalDevice.h>
-#include <Renderer/LogicalDevice/LogicalDevice.cpp>
-
 #include <Renderer/Swapchain/Swapchain.h>
-#include <Renderer/Swapchain/Swapchain.cpp>
-
 #include <Renderer/RenderPass/RenderPass.h>
-#include <Renderer/RenderPass/RenderPass.cpp>
-
 #include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
-#include <Renderer/GraphicsPipeline/GraphicsPipeline.cpp>
-
 #include <Renderer/Command/CommandPool/CommandPool.h>
-#include <Renderer/Command/CommandPool/CommandPool.cpp>
 
 #include <Renderer/Command/CommandBuffer/CommandBuffer.h>
 #include <Renderer/Command/CommandBuffer/CommandBuffer.cpp>
@@ -162,10 +147,11 @@ private:
 	{{-0.4, 0.4, 0.0}, {0.0f, 0.0f, 1.0f}}
 		};
 
-		mesh.create(vkPhysicalDevice, vkLogicalDevice, &meshVertices);
-
 		commandPool.create(physicalDevice, vkLogicalDevice);
 		graphicsCommandPool = commandPool.getCommandPools().graphicsCommandPool;
+
+		mesh.create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue,graphicsCommandPool, &meshVertices);
+			
 		commandBuffer.create(vkLogicalDevice,swapchain,graphicsCommandPool);
 		commandBuffer.record(swapchain,renderPass,graphicsPipeline, mesh);
 		semaphores.create(vkLogicalDevice, settings.maxBufferedImages);
@@ -206,7 +192,7 @@ private:
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
 		if (vkQueueSubmit(logicalDevice.getQueues().graphicsQueue, 1, &submitInfo,fences.getGraphicsFence(currentFrame)) != VK_SUCCESS) {
-			throw std::runtime_error("failed to submit draw command buffer!");
+			throw std::runtime_error("Failed to submit draw command buffer");
 		}
 
 		VkSwapchainKHR swapchains[] = { vkSwapchain };
