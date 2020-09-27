@@ -87,9 +87,9 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 }
 
  void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass) {
-	swapchainDetails.framebuffers.resize(swapchainDetails.swapchainImages.size());
+	swapchainDetails.frameBuffers.resize(swapchainDetails.swapchainImages.size());
 
-	for (size_t i = 0; i < swapchainDetails.framebuffers.size(); i++) {
+	for (size_t i = 0; i < swapchainDetails.frameBuffers.size(); i++) {
 
 		std::array<VkImageView, 1> attachments = {
 			swapchainDetails.swapchainImages[i].imageView
@@ -105,7 +105,7 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 		framebufferCreateInfo.layers = 1;
 
 
-		if (vkCreateFramebuffer(vkLogicalDevice, &framebufferCreateInfo, nullptr, &swapchainDetails.framebuffers[i]) != VK_SUCCESS) {
+		if (vkCreateFramebuffer(vkLogicalDevice, &framebufferCreateInfo, nullptr, &swapchainDetails.frameBuffers[i]) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create framebuffer");
 		}
 	}
@@ -184,7 +184,7 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 
  void Swapchain::destroy(VkDevice vkLogicalDevice) {
 
-	for (auto framebuffer : swapchainDetails.framebuffers) {
+	for (auto framebuffer : swapchainDetails.frameBuffers) {
 		vkDestroyFramebuffer(vkLogicalDevice, framebuffer, nullptr);
 	}
 

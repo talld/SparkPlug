@@ -35,7 +35,7 @@ struct SwapchainDetails {
 	VkSurfaceFormatKHR format;
 	VkPresentModeKHR presentMode;
 	std::vector<SwapchainImage> swapchainImages;
-	std::vector<VkFramebuffer> framebuffers;
+	std::vector<VkFramebuffer> frameBuffers;
 };
 
 class Swapchain {

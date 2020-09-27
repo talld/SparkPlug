@@ -1,13 +1,13 @@
 #include "CommandBuffer.h"
 
 inline void CommandBuffer::create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCommandPool commandPool) {
-	commandBuffers.resize(swapchain.getSwapchainDetails().framebuffers.size());
+	commandBuffers.resize(swapchain.getSwapchainDetails().frameBuffers.size());
 
 	VkCommandBufferAllocateInfo graphicsCommandBufferAllocateInfo{};
 	graphicsCommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	graphicsCommandBufferAllocateInfo.commandPool = commandPool;
 	graphicsCommandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	graphicsCommandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(swapchain.getSwapchainDetails().framebuffers.size());
+	graphicsCommandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(swapchain.getSwapchainDetails().frameBuffers.size());
 
 	if (vkAllocateCommandBuffers(vkLogicalDevice, &graphicsCommandBufferAllocateInfo, commandBuffers.data()) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create command buffers");
@@ -32,7 +32,7 @@ inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, Gr
 
 	for (size_t i = 0; i < commandBuffers.size(); i++) {
 
-		renderPassBeginInfo.framebuffer = swapchain.getSwapchainDetails().framebuffers[i];
+		renderPassBeginInfo.framebuffer = swapchain.getSwapchainDetails().frameBuffers[i];
 
 		if (vkBeginCommandBuffer(commandBuffers[i], &graphicBufferBeginInfo) != VK_SUCCESS) {
 			throw std::runtime_error(std::string("Failed to begin graphics command buffer record, interation :" + i));

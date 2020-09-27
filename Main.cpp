@@ -1,7 +1,6 @@
-#include <Engine.h>
+#include <iostream>
 
 int main() {
-    Engine e;
-    e.boot();
-
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
 }
