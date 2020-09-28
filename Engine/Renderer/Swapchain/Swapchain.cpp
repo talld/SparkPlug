@@ -112,7 +112,8 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 }
 
  void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window) {
-	auto swapChainSupport = physicalDevice.getSurfaceSwapchainSupport(physicalDevice.getPhysicalDevice(), surface);
+
+    auto swapChainSupport = physicalDevice.getSurfaceSwapchainSupport(physicalDevice.getPhysicalDevice(), surface);
 
 	VkSurfaceFormatKHR format = selectSwapchainSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = selectSwapchainPresentMode(swapChainSupport.presentModes);
@@ -151,6 +152,7 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 		swapChainCreateInfo.queueFamilyIndexCount = 0; // Optional
 		swapChainCreateInfo.pQueueFamilyIndices = nullptr; // Optional
 	}
+
 
 	if (vkCreateSwapchainKHR(logicalDevice.getLogicalDevice(), &swapChainCreateInfo, nullptr, &vkSwapchain) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create swapchain");
