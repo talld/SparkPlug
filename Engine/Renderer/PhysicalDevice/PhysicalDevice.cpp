@@ -9,7 +9,7 @@
 
 	//score device
 	if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
-		score += (deviceProperties.limits.maxImageDimension2D + deviceProperties.limits.maxFragmentInputComponents + deviceProperties.limits.maxGeometryOutputVertices) * 2;
+		score += (deviceProperties.limits.maxImageDimension2D + deviceProperties.limits.maxFragmentInputComponents + deviceProperties.limits.maxGeometryOutputVertices) * 4;
 	}
 	else {
 		score += (deviceProperties.limits.maxImageDimension2D + deviceProperties.limits.maxFragmentInputComponents + deviceProperties.limits.maxGeometryOutputVertices);
@@ -142,6 +142,10 @@
 			}
 		}
 	}
+     VkPhysicalDeviceProperties deviceProperties{};
+     vkGetPhysicalDeviceProperties(highestDevice, &deviceProperties);
+
+     std::cout<<(deviceProperties.deviceName);
 
 	if (highestDevice == nullptr || highest == -1) {
 		throw std::runtime_error("Failed to evaluate devices");
