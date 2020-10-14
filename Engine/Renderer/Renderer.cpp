@@ -1,21 +1,21 @@
 #include "Renderer.h"
 
- void Renderer::bootRender() {
+void Renderer::bootRender() {
 	initSettings();
 	window.create();
 	glfwWindow = window.getWindow();
 	initVulkan();
 }
 
- void Renderer::enterMainLoop() {
+void Renderer::enterMainLoop() {
 	mainLoop();
 }
 
- void Renderer::terminate() {
+void Renderer::terminate() {
 	cleanUp();
 }
 
- void Renderer::initVulkan() {
+void Renderer::initVulkan() {
 	instance.createInstance(enableValidationLayers);
 	vkInstance = instance.getInstance();
 
@@ -27,6 +27,8 @@
 
 	logicalDevice.create(physicalDevice);
 	vkLogicalDevice = logicalDevice.getLogicalDevice();
+
+	allocator = createAllocator(vkPhysicalDevice, vkLogicalDevice, vkInstance);
 
 	swapchain.create(physicalDevice, logicalDevice, surface, window);
 	vkSwapchain = swapchain.getSwapchain();
@@ -60,10 +62,10 @@
 	};
 
 	Mesh mesh1;
-	mesh1.create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, &meshVertices1, &meshIndices);
+	mesh1.create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, &meshVertices1, &meshIndices, allocator);
 	meshes.push_back(mesh1);
 	Mesh mesh2;
-	mesh2.create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, &meshVertices2, &meshIndices);
+	mesh2.create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, &meshVertices2, &meshIndices, allocator);
 	meshes.push_back(mesh2);
 
 	commandBuffer.create(vkLogicalDevice, swapchain, graphicsCommandPool);
@@ -75,7 +77,7 @@
 	initCleanUp();
 }
 
- void Renderer::initSettings() {
+void Renderer::initSettings() {
 	settings.maxBufferedImages = 3;
 
 }
@@ -86,7 +88,7 @@ void Renderer::update() {
 
 }
 
- void Renderer::render() {
+void Renderer::render() {
 
 	vkWaitForFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame), VK_TRUE, UINT64_MAX);
 	vkResetFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame));
@@ -133,7 +135,7 @@ void Renderer::update() {
 	currentFrame = (currentFrame + 1) % settings.maxBufferedImages;
 }
 
- void Renderer::mainLoop() {
+void Renderer::mainLoop() {
 	while (!glfwWindowShouldClose(glfwWindow)) {
 		update();
 		render();
@@ -141,11 +143,11 @@ void Renderer::update() {
 	vkDeviceWaitIdle(vkLogicalDevice);
 }
 
- void Renderer::initCleanUp() {
+void Renderer::initCleanUp() {
 
 }
 
- void Renderer::cleanUp() {
+void Renderer::cleanUp() {
 
 	for (size_t i = 0; i<meshes.size(); i++) {
 		meshes[i].destroy();
@@ -163,10 +165,14 @@ void Renderer::update() {
 
 	swapchain.destroy(logicalDevice.getLogicalDevice());
 
+	destroyAllocator(allocator);
+
 	logicalDevice.destory();
 
 	window.destroy(vkInstance);
 
 	instance.destroy(enableValidationLayers);
+
+	std::cin.get(); //pause to read error codes
 
 }

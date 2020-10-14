@@ -1,6 +1,6 @@
 #include "Swapchain.h"
 
- VkExtent2D Swapchain::selectSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, Window window) {
+VkExtent2D Swapchain::selectSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, Window window) {
 	if (surfaceCapabilities.currentExtent.width != UINT32_MAX) {
 		return surfaceCapabilities.currentExtent;
 	}
@@ -14,7 +14,7 @@
 	}
 }
 
- VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPresentModeKHR> presentModes) {
+VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPresentModeKHR> presentModes) {
 	for (const auto& presentMode : presentModes) {
 		if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
 			return presentMode;
@@ -24,7 +24,7 @@
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
- VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
+VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
 
 	VkFormat chosenFormat = availableFormats[0].format;
 
@@ -53,7 +53,7 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 	return availableFormats[0].colorSpace;
 }
 
- VkSurfaceFormatKHR Swapchain::selectSwapchainSurfaceFormat(std::vector<VkSurfaceFormatKHR> availableFormats) {
+VkSurfaceFormatKHR Swapchain::selectSwapchainSurfaceFormat(std::vector<VkSurfaceFormatKHR> availableFormats) {
 
 	VkSurfaceFormatKHR format{};
 
@@ -63,7 +63,7 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 	return format;
 }
 
- VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
+VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
 	VkImageViewCreateInfo imageViewCreateInfo{};
 	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	imageViewCreateInfo.image = image;
@@ -86,7 +86,7 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 	return imageView;
 }
 
- void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass) {
+void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass) {
 	swapchainDetails.frameBuffers.resize(swapchainDetails.swapchainImages.size());
 
 	for (size_t i = 0; i < swapchainDetails.frameBuffers.size(); i++) {
@@ -111,7 +111,7 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 	}
 }
 
- void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window) {
+void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window) {
 
     auto swapChainSupport = physicalDevice.getSurfaceSwapchainSupport(physicalDevice.getPhysicalDevice(), surface);
 
@@ -176,15 +176,15 @@ VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, 
 
 }
 
- VkSwapchainKHR Swapchain::getSwapchain() {
+VkSwapchainKHR Swapchain::getSwapchain() {
 	return vkSwapchain;
 }
 
- SwapchainDetails Swapchain::getSwapchainDetails() {
+SwapchainDetails Swapchain::getSwapchainDetails() {
 	return swapchainDetails;
 }
 
- void Swapchain::destroy(VkDevice vkLogicalDevice) {
+void Swapchain::destroy(VkDevice vkLogicalDevice) {
 
 	for (auto framebuffer : swapchainDetails.frameBuffers) {
 		vkDestroyFramebuffer(vkLogicalDevice, framebuffer, nullptr);

@@ -1,6 +1,6 @@
 #include "RenderPass.h"
 
- void RenderPass::create(VkDevice vkLogcialDevice, Swapchain swapchain) {
+void RenderPass::create(VkDevice vkLogcialDevice, Swapchain swapchain) {
 	auto swapchainDetails = swapchain.getSwapchainDetails();
 	VkAttachmentDescription colorAttchment{};
 	colorAttchment.format = swapchainDetails.format.format;
@@ -53,10 +53,10 @@
 	}
 }
 
- RenderPasses RenderPass::getRenderPasses() {
+RenderPasses RenderPass::getRenderPasses() {
 	return renderPasses;
 }
 
- void RenderPass::destroy(VkDevice vkLogicalDevice) {
+void RenderPass::destroy(VkDevice vkLogicalDevice) {
 	vkDestroyRenderPass(vkLogicalDevice, renderPasses.main, nullptr);
 }

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CommandBuffer_H
+#define CommandBuffer_H
+
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 #include <stdexcept>
@@ -48,3 +50,4 @@ public:
 	}
 };
 
+#endif

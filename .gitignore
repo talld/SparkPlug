@@ -22,3 +22,8 @@
 *.idb
 *.txt
 SparkPlug/.vs/SparkPlug/v16/.suo
+.vs/SparkPlug/v16/.suo
+*.db-shm
+*.db-wal
+*.opendb
+*.recipe

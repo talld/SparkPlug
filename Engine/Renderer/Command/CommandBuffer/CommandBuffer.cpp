@@ -1,6 +1,6 @@
 #include "CommandBuffer.h"
 
-inline void CommandBuffer::create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCommandPool commandPool) {
+void CommandBuffer::create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCommandPool commandPool) {
 	commandBuffers.resize(swapchain.getSwapchainDetails().frameBuffers.size());
 
 	VkCommandBufferAllocateInfo graphicsCommandBufferAllocateInfo{};
@@ -14,7 +14,7 @@ inline void CommandBuffer::create(VkDevice vkLogicalDevice, Swapchain swapchain,
 	}
 }
 
-inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, std::vector<Mesh> meshes) {
+void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, std::vector<Mesh> meshes) {
 
 	VkCommandBufferBeginInfo graphicBufferBeginInfo{};
 	graphicBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -62,14 +62,14 @@ inline void CommandBuffer::record(Swapchain swapchain, RenderPass renderPass, Gr
 	}
 }
 
-inline VkCommandBuffer* CommandBuffer::getCommandBufferP(int index) {
+VkCommandBuffer* CommandBuffer::getCommandBufferP(int index) {
 	return &commandBuffers[index];
 }
 
-inline VkCommandBuffer CommandBuffer::getCommandBuffer(int index) {
+VkCommandBuffer CommandBuffer::getCommandBuffer(int index) {
 	return commandBuffers[index];
 }
 
-inline std::vector<VkCommandBuffer> CommandBuffer::getCommandBuffers() {
+std::vector<VkCommandBuffer> CommandBuffer::getCommandBuffers() {
 	return commandBuffers;
 }

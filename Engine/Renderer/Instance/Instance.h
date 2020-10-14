@@ -1,6 +1,6 @@
-#pragma once
+#ifndef Instance_H
+#define Instance_H
 
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 #include <stdexcept>
@@ -55,3 +55,5 @@ public:
 	void destroy(bool enableValidationLayers);
 
 };
+
+#endif

@@ -1,5 +1,7 @@
-#pragma once
-#define GLFW_INCLUDE_VULKAN
+#ifndef Semaphores_H
+#define Semaphores_H
+
+
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 #include <stdexcept>
@@ -35,3 +37,4 @@ public:
 
 };
 
+#endif

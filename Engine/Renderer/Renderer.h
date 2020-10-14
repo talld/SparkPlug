@@ -1,7 +1,15 @@
-#pragma once
+#ifndef Renderer_H
+#define Renderder_H
 
-#define GLFW_INCLUDE_VULKAN
+#ifdef NDEBUG
+const bool enableValidationLayers = false;
+#else
+const bool enableValidationLayers = true;
+#endif
+
+#pragma once
 #include <GLFW/glfw3.h>
+#include <vk_mem_alloc.h>
 #include <vulkan/vulkan.h>
 #include <stdexcept>
 #include <cstdint>
@@ -22,19 +30,10 @@
 #include <Renderer/RenderPass/RenderPass.h>
 #include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
 #include <Renderer/Command/CommandPool/CommandPool.h>
-
 #include <Renderer/Command/CommandBuffer/CommandBuffer.h>
-#include <Renderer/Command/CommandBuffer/CommandBuffer.cpp>
-
 #include <Renderer/Sync/Fences/Fences.h>
-#include <Renderer/Sync/Fences/Fences.cpp>
-
 #include <Renderer/Sync/Semaphores/Semaphores.h>
-#include <Renderer/Sync/Semaphores/Semaphores.cpp>
-
-
 #include <Core/Object/Mesh/Mesh.h>
-#include <Core/Object/Mesh/Mesh.cpp>
 
 
 /*TODO: 
@@ -45,6 +44,8 @@
 	online SPR-V compiler
 	depth buffing
 */
+
+class CommandBuffer;
 
 class Instance;
 
@@ -71,11 +72,6 @@ public:
 
 private:
 
-#ifdef NDEBUG
-	const bool enableValidationLayers = false;
-#else
-	const bool enableValidationLayers = true;
-#endif
 
 	Settings settings;
 
@@ -91,6 +87,8 @@ private:
 
 	LogicalDevice logicalDevice;
 	VkDevice vkLogicalDevice;
+
+	VmaAllocator allocator;
 
 	Swapchain swapchain;
 	VkSwapchainKHR vkSwapchain;
@@ -111,7 +109,6 @@ private:
 
 	void initVulkan();
 
-
 	void initSettings();
 
 	void update();
@@ -120,8 +117,9 @@ private:
 
 	void mainLoop();
 
-
 	void initCleanUp();
 
 	void cleanUp();
 };
+
+#endif

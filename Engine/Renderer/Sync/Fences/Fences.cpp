@@ -1,6 +1,6 @@
 #include "Fences.h"
 
-inline void Fences::create(VkDevice vkLogicalDevice, int maxBufferedImages) {
+void Fences::create(VkDevice vkLogicalDevice, int maxBufferedImages) {
 	graphicFences.resize(maxBufferedImages);
 
 	VkFenceCreateInfo fenceCreateInfo{};
@@ -14,23 +14,23 @@ inline void Fences::create(VkDevice vkLogicalDevice, int maxBufferedImages) {
 	}
 }
 
-inline std::vector<SwapchainFences> Fences::getSwapchainFences() {
+std::vector<SwapchainFences> Fences::getSwapchainFences() {
 	return swapchainFences;
 }
 
-inline std::vector<GraphicFences> Fences::getGraphicsFences() {
+std::vector<GraphicFences> Fences::getGraphicsFences() {
 	return graphicFences;
 }
 
-inline VkFence Fences::getGraphicsFence(int index) {
+VkFence Fences::getGraphicsFence(int index) {
 	return graphicFences[index].renderFence;
 }
 
-inline VkFence* Fences::getGraphicsFenceP(int index) {
+VkFence* Fences::getGraphicsFenceP(int index) {
 	return &graphicFences[index].renderFence;
 }
 
-inline void Fences::destroy(VkDevice vkLogicalDevice, int maxBufferedImages) {
+void Fences::destroy(VkDevice vkLogicalDevice, int maxBufferedImages) {
 	for (size_t i = 0; i < maxBufferedImages; i++) {
 		vkDestroyFence(vkLogicalDevice, graphicFences[i].renderFence, nullptr);
 	}

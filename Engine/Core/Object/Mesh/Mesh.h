@@ -1,6 +1,8 @@
-#pragma once
+#ifndef Mesh_H
+#define Mesh_H
 
 #include <GLFW/glfw3.h>
+#include <vk_mem_alloc.h>
 #include <vulkan/vulkan.h>
 #include <stdexcept>
 #include <cstdint>
@@ -21,14 +23,16 @@ class Mesh
 {
 private:
 
+	VmaAllocator allocator;
+
 	int vertexCount;
 	VkBuffer vertexBuffer;
 	VkDeviceMemory vertexMemory;
-
+	VmaAllocation vertexAllocation;
 
 	int indexCount;
 	VkBuffer indexBuffer;
-	VkDeviceMemory indexMemory;
+	VmaAllocation indexAllocation;
 
 	VkPhysicalDevice vkPhysicalDevice;
 	VkDevice vkLogicalDevice;
@@ -43,7 +47,7 @@ public:
 
 
 
-	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
+	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, VmaAllocator allocator);
 
 	void create(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
 
@@ -58,3 +62,4 @@ public:
 	void destroy();
 };
 
+#endif

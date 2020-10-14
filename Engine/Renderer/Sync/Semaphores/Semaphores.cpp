@@ -1,6 +1,6 @@
 #include "Semaphores.h"
 
-inline void Semaphores::create(VkDevice vkLogicalDevice, int maxBufferedImages) {
+void Semaphores::create(VkDevice vkLogicalDevice, int maxBufferedImages) {
 
 	imagesAvailable.resize(maxBufferedImages);
 	rendersFinished.resize(maxBufferedImages);
@@ -17,15 +17,15 @@ inline void Semaphores::create(VkDevice vkLogicalDevice, int maxBufferedImages) 
 	}
 }
 
-inline VkSemaphore Semaphores::getImagesAvailable(int index) {
+VkSemaphore Semaphores::getImagesAvailable(int index) {
 	return imagesAvailable[index];
 }
 
-inline VkSemaphore Semaphores::getRendersFinished(int index) {
+VkSemaphore Semaphores::getRendersFinished(int index) {
 	return rendersFinished[index];
 }
 
-inline void Semaphores::destroy(VkDevice vkLogicalDevice, int maxBufferedImages) {
+void Semaphores::destroy(VkDevice vkLogicalDevice, int maxBufferedImages) {
 	for (size_t i = 0; i < maxBufferedImages; i++) {
 		vkDestroySemaphore(vkLogicalDevice, rendersFinished[i], nullptr);
 		vkDestroySemaphore(vkLogicalDevice, imagesAvailable[i], nullptr);
