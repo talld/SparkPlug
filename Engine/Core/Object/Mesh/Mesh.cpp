@@ -20,11 +20,9 @@ VkBuffer Mesh::createVertexBuffer(VkQueue transferQueue, VkCommandPool transferC
 
 	//write only dst index buffer
 	createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY, &vertexBuffer, &vertexAllocation);
-
-	//TODO: device memory flushing here
-
-	moveBuffer(vkLogicalDevice, transferQueue, transferCommandPool, stagingBuffer, vertexBuffer, bufferSize);
-
+	//transfer queue copy to gpu local
+	copyBuffer(vkLogicalDevice, transferQueue, transferCommandPool, stagingBuffer, vertexBuffer, bufferSize);
+	//clean up staging buffer
 	vmaDestroyBuffer(allocator, stagingBuffer, stagingAllocation);
 
 	return vertexBuffer;
@@ -49,12 +47,9 @@ VkBuffer Mesh::createIndexBuffer(VkQueue transferQueue, VkCommandPool transferCo
 
 	//write only dst index buffer
 	createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY, &indexBuffer, &indexAllocation);
-
-
-	//TODO: device memory flushing here
-
-	moveBuffer(vkLogicalDevice, transferQueue, transferCommandPool, stagingBuffer, indexBuffer, bufferSize);
-
+	//transfer queue copy to gpu local
+	copyBuffer(vkLogicalDevice, transferQueue, transferCommandPool, stagingBuffer, indexBuffer, bufferSize);
+	//clean up staging buffer	 
 	vmaDestroyBuffer(allocator, stagingBuffer, stagingAllocation);
 
 	return indexBuffer;

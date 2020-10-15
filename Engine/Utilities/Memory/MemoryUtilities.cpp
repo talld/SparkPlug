@@ -29,7 +29,6 @@ uint32_t getMemoryTypeIndex(VkPhysicalDevice vkPhysicalDevice, uint32_t allowedT
 	return -1;
 }
 
-
 //buffer creation using AMD Vulkan memory allocator
 void createBuffer(VmaAllocator allocator, VkDeviceSize bufferSize, VkBufferUsageFlags BufferUsageFlags, VmaMemoryUsage memoryUsage, VkBuffer* buffer, VmaAllocation* allocation)
 {
@@ -45,7 +44,7 @@ void createBuffer(VmaAllocator allocator, VkDeviceSize bufferSize, VkBufferUsage
 	vmaCreateBuffer(allocator, &bufferCreateInfo, &allocationCreateInfo, buffer, allocation, nullptr);
 }
 
-void moveBuffer(VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, VkBuffer src, VkBuffer dst, VkDeviceSize bufferSize) {
+void copyBuffer(VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, VkBuffer src, VkBuffer dst, VkDeviceSize bufferSize) {
 
 	VkCommandBuffer transferCommandBuffer;
 

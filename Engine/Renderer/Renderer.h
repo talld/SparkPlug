@@ -1,5 +1,7 @@
+
 #ifndef Renderer_H
-#define Renderder_H
+#define Renderer_H
+
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -7,9 +9,9 @@ const bool enableValidationLayers = false;
 const bool enableValidationLayers = true;
 #endif
 
-#pragma once
+
 #include <GLFW/glfw3.h>
-#include <vk_mem_alloc.h>
+#include <vk_mem_alloc.h>	
 #include <vulkan/vulkan.h>
 #include <stdexcept>
 #include <cstdint>
@@ -37,7 +39,6 @@ const bool enableValidationLayers = true;
 
 
 /*TODO: 
-	Memory allocator
 	Swapchain recreation
 	Better error messages
 	better errors
@@ -45,7 +46,7 @@ const bool enableValidationLayers = true;
 	depth buffing
 */
 
-class CommandBuffer;
+class CommandBuffers;
 
 class Instance;
 
@@ -58,7 +59,13 @@ class Renderer
 
 public:
 
+	Renderer() {
 
+	}
+
+	~Renderer() {
+
+	}
 
 	struct Settings {
 		int maxBufferedImages;
@@ -69,6 +76,10 @@ public:
 	void enterMainLoop();
 
 	void terminate();
+
+	void createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
+
+	void record(std::vector<Mesh>* meshes);
 
 private:
 
@@ -98,7 +109,7 @@ private:
 
 	CommandPool commandPool;
 	VkCommandPool graphicsCommandPool;
-	CommandBuffer commandBuffer;
+	CommandBuffers commandBuffer;
 
 	Semaphores semaphores;
 	Fences fences;
@@ -113,13 +124,10 @@ private:
 
 	void update();
 
-	void render();
-
 	void mainLoop();
 
-	void initCleanUp();
+	void render();
 
 	void cleanUp();
 };
-
 #endif

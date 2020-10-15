@@ -15,6 +15,14 @@ void Renderer::terminate() {
 	cleanUp();
 }
 
+void Renderer::createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices){
+	mesh->create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, vertices, indices, allocator);
+}
+
+void Renderer::record(std::vector<Mesh>* meshes){
+	commandBuffer.record(swapchain, renderPass, graphicsPipeline, meshes);
+}
+
 void Renderer::initVulkan() {
 	instance.createInstance(enableValidationLayers);
 	vkInstance = instance.getInstance();
@@ -42,39 +50,10 @@ void Renderer::initVulkan() {
 	commandPool.create(physicalDevice, vkLogicalDevice);
 	graphicsCommandPool = commandPool.getCommandPools().graphicsCommandPool;
 
-	std::vector<Vertex> meshVertices1 = {
-		{ { -0.1, -0.4, 0.0 },{ 1.0f,0.0f,0.0f } },
-	{ { -0.1, 0.4, 0.0 },{ 0.0f, 1.0f, 0.0f } },
-	{ { -0.9, 0.4, 0.0 },{ 0.0f, 0.0f, 1.0f } },
-	{ { -0.9, -0.4, 0.0 },{ 0.0f, 0.0f, 1.0f } },
-	};
-
-	std::vector<Vertex> meshVertices2 = {
-		{ { 0.9, -0.3, 0.0 },{ 1.0f,0.0f,0.0f } },
-	{ { 0.9, 0.1, 0.0 },{ 0.0f, 1.0f, 0.0f } },
-	{ { 0.1, 0.3, 0.0 },{ 0.0f, 0.0f, 1.0f } },
-	{ { 0.1, -0.3, 0.0 },{ 0.0f, 0.0f, 1.0f } },
-	};
-
-	std::vector<uint32_t> meshIndices = {
-		0,1,2,
-		2,3,0
-	};
-
-	Mesh mesh1;
-	mesh1.create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, &meshVertices1, &meshIndices, allocator);
-	meshes.push_back(mesh1);
-	Mesh mesh2;
-	mesh2.create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, &meshVertices2, &meshIndices, allocator);
-	meshes.push_back(mesh2);
-
 	commandBuffer.create(vkLogicalDevice, swapchain, graphicsCommandPool);
-	commandBuffer.record(swapchain, renderPass, graphicsPipeline, meshes);
 	semaphores.create(vkLogicalDevice, settings.maxBufferedImages);
 	fences.create(vkLogicalDevice, settings.maxBufferedImages);
 
-
-	initCleanUp();
 }
 
 void Renderer::initSettings() {
@@ -88,15 +67,27 @@ void Renderer::update() {
 
 }
 
+void Renderer::mainLoop() {
+	while (!glfwWindowShouldClose(glfwWindow)) {
+		update();
+		render();
+	}
+	vkDeviceWaitIdle(vkLogicalDevice);
+}
+
 void Renderer::render() {
 
 	vkWaitForFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame), VK_TRUE, UINT64_MAX);
 	vkResetFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame));
 	uint32_t imageIndex;
+
+	//next swapchain image index to imageIndex
 	vkAcquireNextImageKHR(vkLogicalDevice, vkSwapchain, UINT64_MAX, semaphores.getImagesAvailable(currentFrame), VK_NULL_HANDLE, &imageIndex);
 
 	VkSemaphore waitSemaphores[] = { semaphores.getImagesAvailable(currentFrame) };
 	VkSemaphore signalSemaphores[] = { semaphores.getRendersFinished(currentFrame) };
+	
+	//wait on pipeline color attachment before submiting an image to the commandBuffer
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 	VkSubmitInfo submitInfo{};
@@ -122,9 +113,7 @@ void Renderer::render() {
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = swapchains;
 	presentInfo.pImageIndices = &imageIndex;
-
-	presentInfo.pResults = nullptr; // Optional
-
+	presentInfo.pResults = nullptr; //TODO: present results checking
 
 
 	if (vkQueuePresentKHR(logicalDevice.getQueues().presentationQueue, &presentInfo) != VK_SUCCESS) {
@@ -133,18 +122,6 @@ void Renderer::render() {
 	currentFrame = (currentFrame + 1) % settings.maxBufferedImages;
 
 	currentFrame = (currentFrame + 1) % settings.maxBufferedImages;
-}
-
-void Renderer::mainLoop() {
-	while (!glfwWindowShouldClose(glfwWindow)) {
-		update();
-		render();
-	}
-	vkDeviceWaitIdle(vkLogicalDevice);
-}
-
-void Renderer::initCleanUp() {
-
 }
 
 void Renderer::cleanUp() {

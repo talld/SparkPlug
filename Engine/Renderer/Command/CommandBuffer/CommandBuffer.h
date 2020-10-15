@@ -26,7 +26,7 @@ class GraphicsPipeline;
 
 class Mesh;
 
-class CommandBuffer
+class CommandBuffers
 {
 	
 private:
@@ -37,7 +37,7 @@ public:
 
 	void create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCommandPool commandPool);
 
-	void record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, std::vector<Mesh> meshes);
+	void record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, std::vector<Mesh>* meshes);
 
 	VkCommandBuffer* getCommandBufferP(int index);
 
@@ -45,9 +45,7 @@ public:
 
 	std::vector<VkCommandBuffer> getCommandBuffers();
 
-	void destroy(VkDevice vkLogicalDevice, VkCommandPool vkCommandPool) {
-		vkFreeCommandBuffers(vkLogicalDevice, vkCommandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
-	}
+	void destroy(VkDevice vkLogicalDevice, VkCommandPool vkCommandPool);
 };
 
 #endif
