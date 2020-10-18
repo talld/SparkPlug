@@ -40,7 +40,7 @@
 	return buffer;
 }
 
- void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass) {
+ void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout) {
 
 
 	auto vertexShaderCode = readFile("Shaders/vert.spv");
@@ -165,13 +165,13 @@
 	VkPipelineColorBlendStateCreateInfo colorBlending{};
 	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 	colorBlending.logicOpEnable = VK_FALSE;
-	colorBlending.logicOp = VK_LOGIC_OP_COPY; // Optional
+	colorBlending.logicOp = VK_LOGIC_OP_COPY; 
 	colorBlending.attachmentCount = 1;
 	colorBlending.pAttachments = &colorBlendAttachment;
-	colorBlending.blendConstants[0] = 0.0f; // Optional
-	colorBlending.blendConstants[1] = 0.0f; // Optional
-	colorBlending.blendConstants[2] = 0.0f; // Optional
-	colorBlending.blendConstants[3] = 0.0f; // Optional
+	colorBlending.blendConstants[0] = 0.0f; 
+	colorBlending.blendConstants[1] = 0.0f; 
+	colorBlending.blendConstants[2] = 0.0f;
+	colorBlending.blendConstants[3] = 0.0f;
 
 
 	VkDynamicState dynamicStates[] = {
@@ -182,10 +182,10 @@
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 0; // Optional
-	pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
-	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
-	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
+	pipelineLayoutInfo.setLayoutCount = 1; 
+	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+	pipelineLayoutInfo.pushConstantRangeCount = 0; 
+	pipelineLayoutInfo.pPushConstantRanges = nullptr; 
 
 
 	if (vkCreatePipelineLayout(vkLogicalDevice, &pipelineLayoutInfo, nullptr, &pipeline.layout) != VK_SUCCESS) {

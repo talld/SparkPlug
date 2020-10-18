@@ -3,7 +3,7 @@
 
 #include <Input/Input.h>
 #include <Renderer/Renderer.h>
-#include "Game.h"
+#include <Game.h>
 
 
 class Engine {
@@ -14,6 +14,7 @@ public:
 		Game game(renderer);
 		game.start();
 		renderer->enterMainLoop();
+		game.terminate();
 		renderer->terminate();
 	}
 };

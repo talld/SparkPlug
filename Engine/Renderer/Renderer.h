@@ -30,6 +30,7 @@ const bool enableValidationLayers = true;
 #include <Renderer/LogicalDevice/LogicalDevice.h>
 #include <Renderer/Swapchain/Swapchain.h>
 #include <Renderer/RenderPass/RenderPass.h>
+#include <Renderer/DescriptorSet/DescriptorSet.h>
 #include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
 #include <Renderer/Command/CommandPool/CommandPool.h>
 #include <Renderer/Command/CommandBuffer/CommandBuffer.h>
@@ -71,6 +72,7 @@ public:
 		int maxBufferedImages;
 	};
 
+	
 	void bootRender();
 
 	void enterMainLoop();
@@ -104,6 +106,9 @@ private:
 	Swapchain swapchain;
 	VkSwapchainKHR vkSwapchain;
 
+	DescriptorSet descriptorSet;
+	VkDescriptorSetLayout vkDescriptorSetLayout;
+
 	RenderPass renderPass;
 	GraphicsPipeline graphicsPipeline;
 
@@ -113,8 +118,6 @@ private:
 
 	Semaphores semaphores;
 	Fences fences;
-
-	std::vector<Mesh> meshes;
 
 	int currentFrame = 0;
 

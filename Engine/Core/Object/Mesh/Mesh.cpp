@@ -18,10 +18,16 @@ VkBuffer Mesh::createVertexBuffer(VkQueue transferQueue, VkCommandPool transferC
 	memcpy(data, vertices->data(), (size_t)bufferSize);
 	vmaUnmapMemory(allocator, stagingAllocation);
 
+	//all VMA_MEMORY_USAGE_CPU_ONLY memory is always coherent so no need to flush here
+
 	//write only dst index buffer
 	createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY, &vertexBuffer, &vertexAllocation);
 	//transfer queue copy to gpu local
 	copyBuffer(vkLogicalDevice, transferQueue, transferCommandPool, stagingBuffer, vertexBuffer, bufferSize);
+
+	//we have written new data to the gpu so we need to flush the caches of our allocation
+	vmaFlushAllocation(allocator, vertexAllocation, 0, bufferSize);
+
 	//clean up staging buffer
 	vmaDestroyBuffer(allocator, stagingBuffer, stagingAllocation);
 
@@ -30,7 +36,7 @@ VkBuffer Mesh::createVertexBuffer(VkQueue transferQueue, VkCommandPool transferC
 
 VkBuffer Mesh::createIndexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<uint32_t>* indices) {
 
-	VkDeviceSize bufferSize = sizeof(Vertex) * indices->size();
+	VkDeviceSize bufferSize = sizeof(uint32_t) * indices->size();
 
 	// temp SRC buffer
 	VkBuffer stagingBuffer;
@@ -38,20 +44,26 @@ VkBuffer Mesh::createIndexBuffer(VkQueue transferQueue, VkCommandPool transferCo
 
 	createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT| VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_ONLY, &stagingBuffer, &stagingAllocation);
 
-
+	
 	//cpu data move to src buffer
 	void* data;
 	vmaMapMemory(allocator, stagingAllocation, &data);
 	memcpy(data, indices->data(), (size_t)bufferSize);
 	vmaUnmapMemory(allocator, stagingAllocation);
 
+	//all VMA_MEMORY_USAGE_CPU_ONLY memory is always coherent so no need to flush here
+
 	//write only dst index buffer
 	createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY, &indexBuffer, &indexAllocation);
 	//transfer queue copy to gpu local
 	copyBuffer(vkLogicalDevice, transferQueue, transferCommandPool, stagingBuffer, indexBuffer, bufferSize);
+
+	//we have written new data to the gpu so we need to flush the caches of our allocation
+	vmaFlushAllocation(allocator, indexAllocation, 0, bufferSize);
+
 	//clean up staging buffer	 
 	vmaDestroyBuffer(allocator, stagingBuffer, stagingAllocation);
-
+	
 	return indexBuffer;
 }
 

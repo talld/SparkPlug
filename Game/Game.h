@@ -15,6 +15,10 @@ public:
 		this->renderer = renderer;
 	}
 
+	~Game() {
+
+	}
+
 	void start() {
 		std::vector<Vertex> meshVertices1 = {
 		{ { -0.1, -0.4, 0.0 },{ 1.0f,0.0f,0.0f } },
@@ -42,8 +46,14 @@ public:
 		renderer->createMesh(&mesh2, &meshVertices2, &meshIndices);
 		meshes.push_back(mesh2);
 
-		//renderer->record(&meshes);
+		renderer->record(&meshes);
 	};
+
+	void terminate() {
+		for (size_t i = 0; i < meshes.size(); i++) {
+			meshes[i].destroy();
+		}
+	}
 };
 
 #endif

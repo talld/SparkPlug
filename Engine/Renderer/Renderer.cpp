@@ -42,8 +42,9 @@ void Renderer::initVulkan() {
 	vkSwapchain = swapchain.getSwapchain();
 	renderPass.create(vkLogicalDevice, swapchain);
 
+	vkDescriptorSetLayout = descriptorSet.createDescriptorSetLayout(vkLogicalDevice);
 
-	graphicsPipeline.create(vkLogicalDevice, swapchain, renderPass);
+	graphicsPipeline.create(vkLogicalDevice, swapchain, renderPass,vkDescriptorSetLayout);
 
 	swapchain.createFrameBuffers(vkLogicalDevice, renderPass);
 
@@ -126,15 +127,13 @@ void Renderer::render() {
 
 void Renderer::cleanUp() {
 
-	for (size_t i = 0; i<meshes.size(); i++) {
-		meshes[i].destroy();
-	}
-
 	fences.destroy(vkLogicalDevice, settings.maxBufferedImages);
 
 	semaphores.destroy(vkLogicalDevice, settings.maxBufferedImages);
 
 	commandPool.destroy(vkLogicalDevice);
+
+	descriptorSet.destroy();
 
 	graphicsPipeline.destroy(vkLogicalDevice);
 

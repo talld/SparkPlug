@@ -55,7 +55,7 @@ private:
 
 public:
 
-	void create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass);
+	void create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout);
 
 	Pipeline getPipeline();
 
