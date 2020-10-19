@@ -1,7 +1,5 @@
-
 #ifndef Renderer_H
 #define Renderer_H
-
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -9,6 +7,8 @@ const bool enableValidationLayers = false;
 const bool enableValidationLayers = true;
 #endif
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <GLFW/glfw3.h>
 #include <vk_mem_alloc.h>	
@@ -16,7 +16,6 @@ const bool enableValidationLayers = true;
 #include <stdexcept>
 #include <cstdint>
 #include <algorithm>
-#include <iostream>
 #include <cstdlib>
 #include <set>
 #include <vector>
@@ -31,13 +30,14 @@ const bool enableValidationLayers = true;
 #include <Renderer/Swapchain/Swapchain.h>
 #include <Renderer/RenderPass/RenderPass.h>
 #include <Renderer/DescriptorSet/DescriptorSet.h>
+#include <Renderer/DescriptorSet/DescriptorPool.h>
 #include <Renderer/GraphicsPipeline/GraphicsPipeline.h>
 #include <Renderer/Command/CommandPool/CommandPool.h>
 #include <Renderer/Command/CommandBuffer/CommandBuffer.h>
 #include <Renderer/Sync/Fences/Fences.h>
 #include <Renderer/Sync/Semaphores/Semaphores.h>
 #include <Core/Object/Mesh/Mesh.h>
-
+#include <Core/Object/Camera/Camera.h>
 
 /*TODO: 
 	Swapchain recreation
@@ -58,36 +58,9 @@ class Window;
 class Renderer
 {
 
-public:
-
-	Renderer() {
-
-	}
-
-	~Renderer() {
-
-	}
-
-	struct Settings {
-		int maxBufferedImages;
-	};
-
-	
-	void bootRender();
-
-	void enterMainLoop();
-
-	void terminate();
-
-	void createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
-
-	void record(std::vector<Mesh>* meshes);
-
 private:
-
-
-	Settings settings;
-
+	
+	//Renderer objects
 	GLFWwindow* glfwWindow;
 	Window window;
 	VkSurfaceKHR surface;
@@ -109,6 +82,9 @@ private:
 	DescriptorSet descriptorSet;
 	VkDescriptorSetLayout vkDescriptorSetLayout;
 
+	DescriptorPool descriptorPool;
+	VkDescriptorPool vkDescriptorPool;
+
 	RenderPass renderPass;
 	GraphicsPipeline graphicsPipeline;
 
@@ -119,8 +95,13 @@ private:
 	Semaphores semaphores;
 	Fences fences;
 
+	//Renderer variables
 	int currentFrame = 0;
 
+	//Game Variables
+	Camera* currentCamera;
+
+	//Renderer functions
 	void initVulkan();
 
 	void initSettings();
@@ -132,5 +113,34 @@ private:
 	void render();
 
 	void cleanUp();
+
+public:
+
+	Renderer() {
+
+	}
+
+	~Renderer() {
+
+	}
+
+	struct Settings {
+		int maxBufferedImages;
+	} settings;
+
+
+	void bootRender();
+
+	void enterMainLoop();
+
+	void terminate();
+
+	//Game interface functions
+	void createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
+
+	void bindCamera(Camera* camera);
+
+	void record(std::vector<Mesh>* meshes);
+
 };
 #endif

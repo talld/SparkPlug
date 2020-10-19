@@ -19,8 +19,13 @@ void Renderer::createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector
 	mesh->create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, vertices, indices, allocator);
 }
 
+void Renderer::bindCamera(Camera* camera){
+	camera->create(&descriptorSet);
+	currentCamera = camera;
+}
+
 void Renderer::record(std::vector<Mesh>* meshes){
-	commandBuffer.record(swapchain, renderPass, graphicsPipeline, meshes);
+	commandBuffer.record(swapchain, renderPass, graphicsPipeline, currentCamera,meshes);
 }
 
 void Renderer::initVulkan() {
@@ -42,7 +47,10 @@ void Renderer::initVulkan() {
 	vkSwapchain = swapchain.getSwapchain();
 	renderPass.create(vkLogicalDevice, swapchain);
 
-	vkDescriptorSetLayout = descriptorSet.createDescriptorSetLayout(vkLogicalDevice);
+	vkDescriptorSetLayout = descriptorSet.createLayout(vkLogicalDevice);
+	descriptorSet.createUniformBuffers(allocator, swapchain);
+	vkDescriptorPool = descriptorPool.create(vkLogicalDevice, descriptorSet);
+	descriptorSet.create(vkDescriptorPool);
 
 	graphicsPipeline.create(vkLogicalDevice, swapchain, renderPass,vkDescriptorSetLayout);
 
@@ -105,6 +113,8 @@ void Renderer::render() {
 		throw std::runtime_error("Failed to submit draw command buffer");
 	}
 
+	currentCamera->update();
+
 	VkSwapchainKHR swapchains[] = { vkSwapchain };
 
 	VkPresentInfoKHR presentInfo{};
@@ -135,6 +145,8 @@ void Renderer::cleanUp() {
 
 	descriptorSet.destroy();
 
+	descriptorPool.destroy();
+
 	graphicsPipeline.destroy(vkLogicalDevice);
 
 	renderPass.destroy(vkLogicalDevice);
@@ -148,7 +160,5 @@ void Renderer::cleanUp() {
 	window.destroy(vkInstance);
 
 	instance.destroy(enableValidationLayers);
-
-	std::cin.get(); //pause to read error codes
 
 }

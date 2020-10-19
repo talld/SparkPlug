@@ -40,6 +40,7 @@
 	return buffer;
 }
 
+
  void GraphicsPipeline::create(VkDevice vkLogicalDevice, Swapchain swapchain, RenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout) {
 
 
@@ -223,17 +224,21 @@
 	vkDestroyShaderModule(vkLogicalDevice, fragmentShaderModule, nullptr);
 }
 
+
  Pipeline GraphicsPipeline::getPipeline() {
 	return pipeline;
 }
+
 
  VkRect2D* GraphicsPipeline::getViewScissor() {
 	return &view.scissor;
 }
 
+
  VkViewport* GraphicsPipeline::getViewPort() {
 	return &view.viewPort;
 }
+
 
  void GraphicsPipeline::destroy(VkDevice vkLogicalDevice) {
 	vkDestroyPipeline(vkLogicalDevice, pipeline.graphicsPipeline, nullptr);

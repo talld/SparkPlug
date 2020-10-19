@@ -45,8 +45,6 @@ private:
 
 public:
 
-
-
 	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, VmaAllocator allocator);
 
 	void create(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);

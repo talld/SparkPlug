@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GraphicsPipeline_H
+#define GraphicsPipeline_H
 
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
@@ -65,3 +66,5 @@ public:
 
 	void destroy(VkDevice vkLogicalDevice);
 };
+
+#endif

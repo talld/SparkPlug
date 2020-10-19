@@ -1,4 +1,6 @@
-#pragma once
+#ifndef Swapchain_H
+#define Swapchain_H
+
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 #include <stdexcept>
@@ -44,6 +46,8 @@ private:
 
 	SwapchainDetails swapchainDetails;
 
+	uint32_t swapchainImageCount;
+
 	VkSwapchainKHR vkSwapchain;
 
 	VkExtent2D selectSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, Window window);
@@ -63,6 +67,9 @@ public:
 
 	void createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass);
 
+	uint32_t getImageCount() {
+		return swapchainImageCount;
+	}
 
 	void create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window);
 
@@ -72,3 +79,5 @@ public:
 
 	void destroy(VkDevice logicalDevice);
 };
+
+#endif

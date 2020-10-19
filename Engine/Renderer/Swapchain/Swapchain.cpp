@@ -162,10 +162,10 @@ void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevic
 	swapchainDetails.format = format;
 	swapchainDetails.presentMode = presentMode;
 
-	uint32_t swapChainImageCount = 0;
-	vkGetSwapchainImagesKHR(logicalDevice.getLogicalDevice(), vkSwapchain, &swapChainImageCount, nullptr);
-	std::vector<VkImage> images(swapChainImageCount);
-	vkGetSwapchainImagesKHR(logicalDevice.getLogicalDevice(), vkSwapchain, &swapChainImageCount, images.data());
+	swapchainImageCount = 0;
+	vkGetSwapchainImagesKHR(logicalDevice.getLogicalDevice(), vkSwapchain, &swapchainImageCount, nullptr);
+	std::vector<VkImage> images(swapchainImageCount);
+	vkGetSwapchainImagesKHR(logicalDevice.getLogicalDevice(), vkSwapchain, &swapchainImageCount, images.data());
 
 	for (VkImage image : images) {
 		SwapchainImage swapchainImage{};

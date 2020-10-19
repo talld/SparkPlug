@@ -1,7 +1,7 @@
 #include "CommandBuffer.h"
 
 void CommandBuffers::create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCommandPool commandPool) {
-	commandBuffers.resize(swapchain.getSwapchainDetails().frameBuffers.size());
+	commandBuffers.resize(swapchain.getImageCount());
 
 	VkCommandBufferAllocateInfo graphicsCommandBufferAllocateInfo{};
 	graphicsCommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -14,7 +14,7 @@ void CommandBuffers::create(VkDevice vkLogicalDevice, Swapchain swapchain, VkCom
 	}
 }
 
-void CommandBuffers::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, std::vector<Mesh>* meshes) {
+void CommandBuffers::record(Swapchain swapchain, RenderPass renderPass, GraphicsPipeline graphicsPipeline, Camera* camera, std::vector<Mesh>* meshes) {
 
 	VkCommandBufferBeginInfo graphicBufferBeginInfo{};
 	graphicBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -44,6 +44,8 @@ void CommandBuffers::record(Swapchain swapchain, RenderPass renderPass, Graphics
 			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffer, offsets);
 
 			vkCmdBindIndexBuffer(commandBuffers[i], meshes->at(j).getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+			vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().layout, 0, 1, camera->getDescriptorSet(i), 0, nullptr);
 
 			vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);
 

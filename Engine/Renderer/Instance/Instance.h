@@ -23,7 +23,7 @@ private:
 	VkInstance vkInstance;
 
 	const std::vector<const char*> validationLayers = {
-"VK_LAYER_KHRONOS_validation"
+		"VK_LAYER_KHRONOS_validation"
 	};
 
 	static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);

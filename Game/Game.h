@@ -20,6 +20,11 @@ public:
 	}
 
 	void start() {
+
+		Camera* cam = new Camera();
+
+		renderer->bindCamera(cam);
+
 		std::vector<Vertex> meshVertices1 = {
 		{ { -0.1, -0.4, 0.0 },{ 1.0f,0.0f,0.0f } },
 	{ { -0.1, 0.4, 0.0 },{ 0.0f, 1.0f, 0.0f } },
