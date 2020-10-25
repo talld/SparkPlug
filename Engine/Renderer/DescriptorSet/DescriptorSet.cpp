@@ -11,6 +11,7 @@ VkDescriptorSetLayout DescriptorSet::createLayout(VkDevice lDevice) {
 	MVPLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	MVPLayoutBinding.pImmutableSamplers = nullptr;
 
+
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo{};
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	descriptorSetLayoutCreateInfo.pBindings = &MVPLayoutBinding;
@@ -25,6 +26,7 @@ VkDescriptorSetLayout DescriptorSet::createLayout(VkDevice lDevice) {
 	return descriptorSetLayout;
 }
 
+
 void DescriptorSet::createUniformBuffers(VmaAllocator allocator, Swapchain swapchain) {
 
 	this->allocator = allocator;
@@ -38,9 +40,10 @@ void DescriptorSet::createUniformBuffers(VmaAllocator allocator, Swapchain swapc
 
 	//countinue to use getImageCount as the result *should* be cached
 	for (size_t i = 0; i < swapchain.getImageCount(); i++) {
-		createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_ONLY, &uniformBuffers[i], &uniformBufferAllocations[i]);
+		createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU, &uniformBuffers[i], &uniformBufferAllocations[i]);
 	}
 }
+
 
 void DescriptorSet::create(VkDescriptorPool descriptorPool) {
 
@@ -95,6 +98,17 @@ std::vector<VkBuffer> DescriptorSet::getUniformBuffers() {
 
 std::vector<VmaAllocation> DescriptorSet::getUniformBufferAllocations() {
 	return uniformBufferAllocations;
+}
+
+void DescriptorSet::write(MVP mvp) {
+
+	void* data;
+	for (size_t i = 0; i < uniformBufferAllocations.size(); i++)
+	{
+		vmaMapMemory(allocator, uniformBufferAllocations[i], &data);
+		memcpy(data, &mvp, sizeof(MVP));
+		vmaUnmapMemory(allocator, uniformBufferAllocations[i]);
+	}
 }
 
 void DescriptorSet::destroy() {

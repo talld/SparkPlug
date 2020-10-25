@@ -38,16 +38,16 @@ void CommandBuffers::record(Swapchain swapchain, RenderPass renderPass, Graphics
 		}
 
 		vkCmdBeginRenderPass(commandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);	
 		for (size_t j = 0; j < meshes->size(); j++) {
 			VkBuffer vertexBuffer[] = { meshes->at(j).getVetexBuffer() };
 			VkDeviceSize offsets[] = { 0 };
+
 			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffer, offsets);
 
 			vkCmdBindIndexBuffer(commandBuffers[i], meshes->at(j).getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 			vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().layout, 0, 1, camera->getDescriptorSet(i), 0, nullptr);
-
-			vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);
 
 			vkCmdSetScissor(commandBuffers[i], 0, 1, graphicsPipeline.getViewScissor());
 

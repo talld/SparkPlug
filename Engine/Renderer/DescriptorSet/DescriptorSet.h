@@ -1,7 +1,7 @@
 #ifndef DescriptorSet_H
 #define DescriptorSet_H
 
-#include<glm/glm.hpp>
+
 #include<vk_mem_alloc.h>
 #include<vulkan/vulkan.h>
 #include <vector>
@@ -9,18 +9,16 @@
 
 #include <Renderer/Swapchain/Swapchain.h>
 #include <Utilities/Memory/MemoryUtilities.h>
+#include <Core\Object\Camera\Camera.h>
+
+struct MVP;
 
 class DescriptorSet
 {
 private:
 
 	VkDevice lDevice;
-
-	struct MVP {
-		glm::mat4 projection;
-		glm::mat4 view;
-		glm::mat4 model;
-	} mvp;
+	VkExtent2D extent;
 
 	VkDescriptorSetLayout descriptorSetLayout;
 
@@ -44,6 +42,8 @@ public:
 	std::vector<VkBuffer> getUniformBuffers();
 
 	std::vector<VmaAllocation> getUniformBufferAllocations();
+
+	void write(MVP mvp);
 
 	void destroy();
 };

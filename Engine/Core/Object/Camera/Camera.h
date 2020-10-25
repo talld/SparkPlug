@@ -1,16 +1,32 @@
+#pragma once
 #ifndef Camera_H
 #define Camera_H
 
-#include <vk_mem_alloc.h>
-#include <vulkan/vulkan.h>
 
+#include <vulkan/vulkan.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <Renderer/DescriptorSet/DescriptorSet.h>
+#include <Renderer/Swapchain/Swapchain.h>
+
+class DescriptorSet;
+class Swapchain;
+
+struct MVP {
+	glm::mat4 projection;
+	glm::mat4 view;
+	glm::mat4 model;
+};
 
 class Camera
 {
-private:
 	DescriptorSet* descriptorSet;
+	VkExtent2D extent;
 public:
+	
+
+	MVP mvp;
+
 	Camera() {
 
 	}
@@ -19,17 +35,11 @@ public:
 
 	}
 
-	void create(DescriptorSet* descriptorSet) {
-		this->descriptorSet = descriptorSet;
-	}
+	void create(Swapchain swapchain, DescriptorSet* descriptorSet);
 
-	void update() {
+	void update();
 
-	}
-
-	VkDescriptorSet* getDescriptorSet(int i) {
-		return descriptorSet->getDescriptorSet(i);
-	}
+	VkDescriptorSet* getDescriptorSet(int i);
 };
 
 #endif

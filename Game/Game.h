@@ -25,6 +25,8 @@ public:
 
 		renderer->bindCamera(cam);
 
+		cam->update();
+
 		std::vector<Vertex> meshVertices1 = {
 		{ { -0.1, -0.4, 0.0 },{ 1.0f,0.0f,0.0f } },
 	{ { -0.1, 0.4, 0.0 },{ 0.0f, 1.0f, 0.0f } },

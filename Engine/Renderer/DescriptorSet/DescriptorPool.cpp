@@ -4,15 +4,13 @@ VkDescriptorPool DescriptorPool::create(VkDevice lDevice, DescriptorSet descript
 
 	this->lDevice = lDevice;
 
-	uint32_t size = static_cast<uint32_t>(descriptorSet.getUniformBuffers().size());
-
 	VkDescriptorPoolSize descriptorPoolSize{};
 	descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorPoolSize.descriptorCount = size;
+	descriptorPoolSize.descriptorCount = static_cast<uint32_t>(descriptorSet.getUniformBuffers().size());
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo{};
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	descriptorPoolCreateInfo.maxSets = size;
+	descriptorPoolCreateInfo.maxSets = static_cast<uint32_t>(descriptorSet.getUniformBuffers().size());
 	descriptorPoolCreateInfo.poolSizeCount = 1;
 	descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;
 

@@ -20,7 +20,7 @@ void Renderer::createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector
 }
 
 void Renderer::bindCamera(Camera* camera){
-	camera->create(&descriptorSet);
+	camera->create(swapchain, &descriptorSet);
 	currentCamera = camera;
 }
 
@@ -112,8 +112,6 @@ void Renderer::render() {
 	if (vkQueueSubmit(logicalDevice.getQueues().graphicsQueue, 1, &submitInfo, fences.getGraphicsFence(currentFrame)) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to submit draw command buffer");
 	}
-
-	currentCamera->update();
 
 	VkSwapchainKHR swapchains[] = { vkSwapchain };
 

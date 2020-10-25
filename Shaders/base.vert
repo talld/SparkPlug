@@ -8,12 +8,12 @@ layout(binding = 0) uniform MVP{ //these could just be one premultiplied matrix 
 	mat4 projection;
 	mat4 view; 
 	mat4 model;
-}
+} mvp;
 
 layout(location = 0) out vec3 fragmentColor;
 
 void main() {
-    gl_Position = MVP.projection * MVP.view * MVP.model * vec4(position,1.0);
+    gl_Position = mvp.projection * mvp.view * mvp.model * vec4(position,1.0);
 
     fragmentColor = color;
 }	

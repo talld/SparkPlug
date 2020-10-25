@@ -47,10 +47,11 @@
 	auto vertexShaderCode = readFile("Shaders/vert.spv");
 	auto fragmentShaderCode = readFile("Shaders/frag.spv");
 
-
+	//
+	//	Shader stages
+	//
 	VkShaderModule vertexShaderModule = createShadeModule(vkLogicalDevice, vertexShaderCode);
 	VkShaderModule fragmentShaderModule = createShadeModule(vkLogicalDevice, fragmentShaderCode);
-
 
 	VkPipelineShaderStageCreateInfo vertexShaderStageCreateInfo{};
 	vertexShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -67,6 +68,9 @@
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertexShaderStageCreateInfo, fragShaderStageCreateInfo };
 
+	//
+	//	vertex stage
+	//
 	VkVertexInputBindingDescription vertexInputBindingDescription{};
 	vertexInputBindingDescription.binding = 0;
 	vertexInputBindingDescription.stride = sizeof(Vertex);
@@ -92,13 +96,17 @@
 	vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertexInputAttributeDescription.size());
 	vertexInputCreateInfo.pVertexAttributeDescriptions = vertexInputAttributeDescription.data();
 
-
+	//
+	//	input
+	//
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{};
 	inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
 
-
+	//
+	//	view points
+	//
 	VkPipelineViewportStateCreateInfo viewPortCreateInfo{};
 	viewPortCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewPortCreateInfo.viewportCount = 1;
@@ -132,7 +140,7 @@
 	rasterizerCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizerCreateInfo.lineWidth = 1.0f;
 	rasterizerCreateInfo.cullMode = VK_CULL_MODE_BACK_BIT;
-	rasterizerCreateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizerCreateInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizerCreateInfo.depthBiasEnable = VK_FALSE;
 	rasterizerCreateInfo.depthBiasConstantFactor = 0.0f;
 	rasterizerCreateInfo.depthBiasClamp = 0.0f;
