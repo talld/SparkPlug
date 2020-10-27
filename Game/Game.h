@@ -19,10 +19,12 @@ public:
 
 	}
 
+	std::vector<Camera*> cameras; //vector containing all created cameras
+
 	void start() {
 
 		Camera* cam = new Camera();
-
+		this->cameras.push_back(cam);
 		renderer->bindCamera(cam);
 
 		cam->update();
@@ -59,6 +61,9 @@ public:
 	void terminate() {
 		for (size_t i = 0; i < meshes.size(); i++) {
 			meshes[i].destroy();
+		}
+		for(auto camera : cameras){
+			delete camera;
 		}
 	}
 };

@@ -39,8 +39,11 @@ class PhysicalDevice {
 private:
 
 	const std::vector<const char*> physicalDeviceExtensions = {
-VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
+
+	VkDeviceSize minUBOAllocation;
+
 
 	QueueFamilyIndices indices;
 
@@ -68,7 +71,13 @@ public:
 
 	SwapChainSupportDetails getSurfaceSwapchainSupport(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
 
-	void select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers);
+	VkPhysicalDevice select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers);
+
+	VkDeviceSize getUniformSlabSize();
 
 	QueueFamilyIndices getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
+
+	VkDeviceSize getMinUBOAllocation() {
+		return minUBOAllocation;
+	}
 };

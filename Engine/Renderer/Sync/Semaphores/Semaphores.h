@@ -25,6 +25,8 @@ private:
 
 	std::vector <VkSemaphore> rendersFinished;
 
+	VkSemaphore transferFinished;
+
 public:
 
 	void create(VkDevice vkLogicalDevice, int maxBufferedImages);

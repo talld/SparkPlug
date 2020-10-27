@@ -75,11 +75,13 @@ void Mesh::create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, V
 	this->vkPhysicalDevice = vkPhysicalDevice;
 	this->vkLogicalDevice = vkLogicalDevice;
 	this->allocator = allocator;
+	this->ubo.model = glm::mat4(1.0f);
 	create(vertices, indices);
 }
 
 //resue the mesh object without having to deconstruct and recreate it
 void Mesh::create(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices) {
+	this->ubo.model = glm::mat4(1.0f);
 	indexCount = indices->size();
 	vertexCount = vertices->size();
 	vertexBuffer = createVertexBuffer(transferQueue, transferCommandPool, vertices);
@@ -101,6 +103,14 @@ int Mesh::getVertexCount() {
 
 VkBuffer Mesh::getVetexBuffer() {
 	return vertexBuffer;
+}
+
+void Mesh::setModel(glm::mat4 newModel) {
+	ubo.model = newModel;
+}
+
+glm::mat4 Mesh::getModel() {
+	return ubo.model;
 }
 
 void Mesh::destroy() {

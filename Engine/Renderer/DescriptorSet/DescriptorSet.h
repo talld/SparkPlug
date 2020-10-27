@@ -11,7 +11,7 @@
 #include <Utilities/Memory/MemoryUtilities.h>
 #include <Core\Object\Camera\Camera.h>
 
-struct MVP;
+struct projectionUBO;
 
 class DescriptorSet
 {
@@ -43,7 +43,7 @@ public:
 
 	std::vector<VmaAllocation> getUniformBufferAllocations();
 
-	void write(MVP mvp);
+	void write(projectionUBO mvp);
 
 	void destroy();
 };

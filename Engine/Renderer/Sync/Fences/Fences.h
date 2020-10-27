@@ -26,23 +26,38 @@ struct GraphicFences {
 	VkFence renderFence;
 };
 
+struct TransferFences {
+	VkFence transferFinished;
+};
+
 class Fences
 {
 private:
 
 	std::vector<SwapchainFences> swapchainFences;
 	std::vector<GraphicFences> graphicFences;
+	TransferFences transferFences;
+
+
 public:
 
 	void create(VkDevice vkLogicalDevice, int maxBufferedImages);
 
 	std::vector<SwapchainFences> getSwapchainFences();
 
+	VkFence getSwapchainFence(int index);
+
+	VkFence* getSwapchainFenceP(int index);
+
 	std::vector<GraphicFences> getGraphicsFences();
 	
 	VkFence getGraphicsFence(int index);
 
 	VkFence* getGraphicsFenceP(int index);
+
+	VkFence getTransferFinished(int index);
+
+	VkFence* getTransferFinishedP(int index);
 
 	void destroy(VkDevice vkLogicalDevice, int maxBufferedImages);
 

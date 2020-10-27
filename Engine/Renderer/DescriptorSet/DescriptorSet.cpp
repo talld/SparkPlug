@@ -32,7 +32,7 @@ void DescriptorSet::createUniformBuffers(VmaAllocator allocator, Swapchain swapc
 	this->allocator = allocator;
 
 	//uniform buffer could be reworked to store just one matrix and passed premultiplied to the shader 
-	VkDeviceSize bufferSize = sizeof(MVP);
+	VkDeviceSize bufferSize = sizeof(projectionUBO);
 
 	//one uniform buffer for each swapchain image to prevent altering a ubo while in use 
 	uniformBuffers.resize(swapchain.getImageCount());
@@ -67,8 +67,8 @@ void DescriptorSet::create(VkDescriptorPool descriptorPool) {
 
 		VkDescriptorBufferInfo MVPBufferInfo{};
 		MVPBufferInfo.buffer = uniformBuffers[i];
-		MVPBufferInfo.offset = 0;					//im pretty sure this wont mess up vma allocations but keep an eye out
-		MVPBufferInfo.range = sizeof(MVP);			//range of data (same as size)
+		MVPBufferInfo.offset = 0;							//im pretty sure this wont mess up vma allocations but keep an eye out
+ 		MVPBufferInfo.range = sizeof(projectionUBO);		//range of data (same as size)
 
 		VkWriteDescriptorSet MVPSetWrite{};
 		MVPSetWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -76,7 +76,7 @@ void DescriptorSet::create(VkDescriptorPool descriptorPool) {
 		MVPSetWrite.dstBinding = 0;
 		MVPSetWrite.dstArrayElement = 0;								//index in array as we're not using data in an array 0 is fine
 		MVPSetWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		MVPSetWrite.descriptorCount = 1;								//MVP is only a single descriptor SET despite having 3 descriptors (per image)
+		MVPSetWrite.descriptorCount = 1;								//projectionUBO is only a single descriptor SET despite having 3 descriptors (per image)
 		MVPSetWrite.pBufferInfo = &MVPBufferInfo;
 
 		vkUpdateDescriptorSets(lDevice, 1, &MVPSetWrite, 0, nullptr);	//this does not return a result type for some reason
@@ -100,13 +100,13 @@ std::vector<VmaAllocation> DescriptorSet::getUniformBufferAllocations() {
 	return uniformBufferAllocations;
 }
 
-void DescriptorSet::write(MVP mvp) {
+void DescriptorSet::write(projectionUBO mvp) {
 
 	void* data;
 	for (size_t i = 0; i < uniformBufferAllocations.size(); i++)
 	{
 		vmaMapMemory(allocator, uniformBufferAllocations[i], &data);
-		memcpy(data, &mvp, sizeof(MVP));
+		memcpy(data, &mvp, sizeof(projectionUBO));
 		vmaUnmapMemory(allocator, uniformBufferAllocations[i]);
 	}
 }

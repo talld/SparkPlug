@@ -4,16 +4,19 @@
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 color;
 
-layout(binding = 0) uniform MVP{ //these could just be one premultiplied matrix however the gpu isnt exactly doing much at this stage
+layout(binding = 0) uniform VP{ // view projection these could just be one premultiplied matrix however the gpu isnt exactly doing much at this stage
 	mat4 projection;
 	mat4 view; 
+} vp;
+
+layout(binding = 1) uniform Model{ 
 	mat4 model;
-} mvp;
+} model;
 
 layout(location = 0) out vec3 fragmentColor;
 
 void main() {
-    gl_Position = mvp.projection * mvp.view * mvp.model * vec4(position,1.0);
+    gl_Position = vp.projection * vp.view * model.model * vec4(position,1.0);
 
     fragmentColor = color;
 }	

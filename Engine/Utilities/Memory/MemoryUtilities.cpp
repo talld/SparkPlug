@@ -46,6 +46,9 @@ void createBuffer(VmaAllocator allocator, VkDeviceSize bufferSize, VkBufferUsage
 
 void copyBuffer(VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, VkBuffer src, VkBuffer dst, VkDeviceSize bufferSize) {
 
+	vkWaitForFences(vkLogicalDevice, 1, memUtilitesSettings.fences->getGraphicsFenceP(*memUtilitesSettings.currentFrame), VK_TRUE, UINT64_MAX);
+	vkResetFences(vkLogicalDevice, 1,	memUtilitesSettings.fences->getTransferFinishedP(0));
+
 	VkCommandBuffer transferCommandBuffer;
 
 	VkCommandBufferAllocateInfo transferCommandBufferAllocateInfo{};
@@ -59,15 +62,15 @@ void copyBuffer(VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool t
 	VkCommandBufferBeginInfo transferCommandBufferBeginInfo{};
 	transferCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	transferCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; //single use self destructive (might change later to perimanant (for computer shaders))
-
+	
 	vkBeginCommandBuffer(transferCommandBuffer, &transferCommandBufferBeginInfo);
 
-	VkBufferCopy bufferCopy{};  //single copy from single region (could be optimaized to copy mutliple buffers at one)
-	bufferCopy.srcOffset = 0;
-	bufferCopy.dstOffset = 0;
-	bufferCopy.size = bufferSize;
+		VkBufferCopy bufferCopy{};  //single copy from single region (could be optimaized to copy mutliple buffers at one)
+		bufferCopy.srcOffset = 0;
+		bufferCopy.dstOffset = 0;
+		bufferCopy.size = bufferSize;
 
-	vkCmdCopyBuffer(transferCommandBuffer, src, dst, 1, &bufferCopy);
+		vkCmdCopyBuffer(transferCommandBuffer, src, dst, 1, &bufferCopy);
 
 	vkEndCommandBuffer(transferCommandBuffer);
 
@@ -76,9 +79,18 @@ void copyBuffer(VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool t
 	submitInfo.pCommandBuffers = &transferCommandBuffer;
 	submitInfo.commandBufferCount = 1;
 
-	vkQueueSubmit(transferQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueSubmit(transferQueue, 1, &submitInfo, memUtilitesSettings.fences->getTransferFinished(0));
 
-	vkQueueWaitIdle(transferQueue); //TODO: transfer semaphores and fences ASAP!
+	vkWaitForFences(vkLogicalDevice, 1, memUtilitesSettings.fences->getTransferFinishedP(0), VK_TRUE, UINT64_MAX);
 
 	vkFreeCommandBuffers(vkLogicalDevice, transferCommandPool, 1, &transferCommandBuffer);
+}
+
+void setTransferSync(Fences* fences, int* currentFrame) {
+	memUtilitesSettings.fences = fences;
+	memUtilitesSettings.currentFrame = currentFrame;
+}
+
+VkDeviceSize getUBOAllignment(size_t structSize, VkDeviceSize minUBOAllocation) {
+	return (structSize + minUBOAllocation - 1) & ~(minUBOAllocation - 1);
 }

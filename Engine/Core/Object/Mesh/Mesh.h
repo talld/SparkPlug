@@ -19,9 +19,19 @@
 #include <Utilities/Memory/MemoryUtilities.h>
 
 
+
+struct UBOMesh {
+	glm::mat4 model;
+};
+
+
+
 class Mesh
 {
 private:
+	
+
+	UBOMesh ubo;
 
 	VmaAllocator allocator;
 
@@ -56,6 +66,10 @@ public:
 	int getVertexCount();
 
 	VkBuffer getVetexBuffer();
+
+	void setModel(glm::mat4 newModel);
+
+	glm::mat4 getModel();
 
 	void destroy();
 };

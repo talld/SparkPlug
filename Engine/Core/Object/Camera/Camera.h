@@ -12,10 +12,9 @@
 class DescriptorSet;
 class Swapchain;
 
-struct MVP {
+struct projectionUBO {
 	glm::mat4 projection;
 	glm::mat4 view;
-	glm::mat4 model;
 };
 
 class Camera
@@ -25,7 +24,7 @@ class Camera
 public:
 	
 
-	MVP mvp;
+	projectionUBO mvp;
 
 	Camera() {
 

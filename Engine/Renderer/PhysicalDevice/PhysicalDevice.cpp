@@ -104,7 +104,7 @@
 	return supportDetails;
 }
 
- void PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers) {
+ VkPhysicalDevice PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers) {
 
 	uint32_t physDeviceCount = 0; //physical device count
 	vkEnumeratePhysicalDevices(vkInstance, &physDeviceCount, nullptr);
@@ -151,9 +151,15 @@
 		throw std::runtime_error("Failed to evaluate devices");
 	}
 
-	device = highestDevice;
-	indices = getQueueFamiles(device, surface);
+	this->device = highestDevice;
+	this->indices = getQueueFamiles(device, surface);
+	this->minUBOAllocation = deviceProperties.limits.minUniformBufferOffsetAlignment;
+	return highestDevice;
 }
+
+ VkDeviceSize PhysicalDevice::getUniformSlabSize() {
+	 return minUBOAllocation;
+ }
 
  QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 	QueueFamilyIndices deviceQueueFamilyIndices;

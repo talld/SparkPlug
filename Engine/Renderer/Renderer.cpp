@@ -35,8 +35,8 @@ void Renderer::initVulkan() {
 	window.createSurface(vkInstance);
 	surface = window.getSurface();
 
-	physicalDevice.select(vkInstance, surface, enableValidationLayers);
-	vkPhysicalDevice = physicalDevice.getPhysicalDevice();
+	vkPhysicalDevice = physicalDevice.select(vkInstance, surface, enableValidationLayers);
+
 
 	logicalDevice.create(physicalDevice);
 	vkLogicalDevice = logicalDevice.getLogicalDevice();
@@ -62,6 +62,7 @@ void Renderer::initVulkan() {
 	commandBuffer.create(vkLogicalDevice, swapchain, graphicsCommandPool);
 	semaphores.create(vkLogicalDevice, settings.maxBufferedImages);
 	fences.create(vkLogicalDevice, settings.maxBufferedImages);
+	setTransferSync(&fences, &currentFrame);
 
 }
 
@@ -85,7 +86,8 @@ void Renderer::mainLoop() {
 }
 
 void Renderer::render() {
-
+	
+	vkWaitForFences(vkLogicalDevice, 1, fences.getTransferFinishedP(currentFrame), VK_TRUE, UINT64_MAX); //including this incase of multi threading later
 	vkWaitForFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame), VK_TRUE, UINT64_MAX);
 	vkResetFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame));
 	uint32_t imageIndex;
@@ -131,6 +133,7 @@ void Renderer::render() {
 	currentFrame = (currentFrame + 1) % settings.maxBufferedImages;
 
 	currentFrame = (currentFrame + 1) % settings.maxBufferedImages;
+
 }
 
 void Renderer::cleanUp() {
