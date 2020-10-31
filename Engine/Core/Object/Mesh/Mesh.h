@@ -30,8 +30,9 @@ class Mesh
 {
 private:
 	
-
+	VkDeviceSize size;
 	UBOMesh ubo;
+	void* data;
 
 	VmaAllocator allocator;
 
@@ -55,7 +56,7 @@ private:
 
 public:
 
-	void create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, VmaAllocator allocator);
+	void create(PhysicalDevice physicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, VmaAllocator allocator);
 
 	void create(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
 

@@ -16,7 +16,7 @@ void Renderer::terminate() {
 }
 
 void Renderer::createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices){
-	mesh->create(vkPhysicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, vertices, indices, allocator);
+	mesh->create(physicalDevice, vkLogicalDevice, logicalDevice.getQueues().graphicsQueue, graphicsCommandPool, vertices, indices, allocator);
 }
 
 void Renderer::bindCamera(Camera* camera){
@@ -87,7 +87,6 @@ void Renderer::mainLoop() {
 
 void Renderer::render() {
 	
-	vkWaitForFences(vkLogicalDevice, 1, fences.getTransferFinishedP(currentFrame), VK_TRUE, UINT64_MAX); //including this incase of multi threading later
 	vkWaitForFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame), VK_TRUE, UINT64_MAX);
 	vkResetFences(vkLogicalDevice, 1, fences.getGraphicsFenceP(currentFrame));
 	uint32_t imageIndex;

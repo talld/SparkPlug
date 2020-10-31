@@ -2,6 +2,7 @@
 
 VkBuffer Mesh::createVertexBuffer(VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices) {
 
+	this->data = allocateDynamicBufferTransferSpace(getUBOAllignment(sizeof(ubo), size));
 
 	VkDeviceSize bufferSize = sizeof(Vertex) * vertices->size();
 
@@ -68,14 +69,15 @@ VkBuffer Mesh::createIndexBuffer(VkQueue transferQueue, VkCommandPool transferCo
 }
 
 
-void Mesh::create(VkPhysicalDevice vkPhysicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, VmaAllocator allocator)
+void Mesh::create(PhysicalDevice physicalDevice, VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, VmaAllocator allocator)
 {
 	this->transferQueue = transferQueue;
 	this->transferCommandPool = transferCommandPool;
-	this->vkPhysicalDevice = vkPhysicalDevice;
+	this->vkPhysicalDevice = physicalDevice.getPhysicalDevice();
 	this->vkLogicalDevice = vkLogicalDevice;
 	this->allocator = allocator;
 	this->ubo.model = glm::mat4(1.0f);
+	this->size = physicalDevice.getMinUBOAllocation();
 	create(vertices, indices);
 }
 
@@ -121,4 +123,6 @@ void Mesh::destroy() {
 	vmaDestroyBuffer(allocator, vertexBuffer, vertexAllocation);
 
 	vmaDestroyBuffer(allocator, indexBuffer, indexAllocation);
+
+	freeDynamicBufferTransferSpace(data);
 }

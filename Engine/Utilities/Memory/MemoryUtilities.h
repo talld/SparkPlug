@@ -9,12 +9,14 @@
 #include <Renderer/LogicalDevice/LogicalDevice.h>
 #include <Renderer/PhysicalDevice/PhysicalDevice.h>
 #include <Renderer/Sync/Fences/Fences.h>
+#include <Core/Object/Mesh/Mesh.h>
 
 static struct MemUtilitesSettings {
 	LogicalDevice logicalDevice;
 	PhysicalDevice physicalDevice;
 	Fences* fences;
 	int* currentFrame;
+	const int MAX_OBJECTS = 20;
 } memUtilitesSettings;
 
 VmaAllocator createAllocator(VkPhysicalDevice pDevice, VkDevice lDevice, VkInstance instance);
@@ -30,4 +32,9 @@ void copyBuffer(VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool t
 void setTransferSync(Fences* fences, int* currentFrame);
 
 VkDeviceSize getUBOAllignment(size_t structSize, VkDeviceSize minUBOAllocation);
+
+void* allocateDynamicBufferTransferSpace(VkDeviceSize UBOAllignment);
+
+void freeDynamicBufferTransferSpace(void* data);
+
 #endif

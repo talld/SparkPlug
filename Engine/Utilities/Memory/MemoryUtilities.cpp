@@ -46,7 +46,6 @@ void createBuffer(VmaAllocator allocator, VkDeviceSize bufferSize, VkBufferUsage
 
 void copyBuffer(VkDevice vkLogicalDevice, VkQueue transferQueue, VkCommandPool transferCommandPool, VkBuffer src, VkBuffer dst, VkDeviceSize bufferSize) {
 
-	vkWaitForFences(vkLogicalDevice, 1, memUtilitesSettings.fences->getGraphicsFenceP(*memUtilitesSettings.currentFrame), VK_TRUE, UINT64_MAX);
 	vkResetFences(vkLogicalDevice, 1,	memUtilitesSettings.fences->getTransferFinishedP(0));
 
 	VkCommandBuffer transferCommandBuffer;
@@ -94,3 +93,13 @@ void setTransferSync(Fences* fences, int* currentFrame) {
 VkDeviceSize getUBOAllignment(size_t structSize, VkDeviceSize minUBOAllocation) {
 	return (structSize + minUBOAllocation - 1) & ~(minUBOAllocation - 1);
 }
+
+void* allocateDynamicBufferTransferSpace(VkDeviceSize UBOAllignment) {
+	void* modelTransferSpace = (void*)_aligned_malloc(UBOAllignment * memUtilitesSettings.MAX_OBJECTS, UBOAllignment);	//really need something that isnt void pointer here
+	return modelTransferSpace;
+}
+
+void freeDynamicBufferTransferSpace(void* data) {
+	_aligned_free(data);
+}
+
