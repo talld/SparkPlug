@@ -15,5 +15,5 @@ A simple Vulkan implementation for a high degree of control of small and creativ
 * Compute shaders
 * Multiple Command Buffers for chunk loading/unloading
 * Runtime defragmentation through VMA
-* competent entity system
+* component entity system
 * Morph target animation
