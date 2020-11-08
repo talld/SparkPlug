@@ -1,6 +1,6 @@
 #include "PhysicalDevice.h"
 
- int PhysicalDevice::getDeviceScore(VkPhysicalDevice vkPhysicalDevice) {
+int PhysicalDevice::getDeviceScore(VkPhysicalDevice vkPhysicalDevice) {
 
 	int score = -1;
 
@@ -18,12 +18,12 @@
 	return score;
 }
 
- bool PhysicalDevice::checkDeviceSwapChain(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+bool PhysicalDevice::checkDeviceSwapChain(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 	SwapChainSupportDetails  swapChainSupport = getSurfaceSwapchainSupport(vkPhysicalDevice, surface);
 	return !swapChainSupport.presentModes.empty() && !swapChainSupport.formats.empty();
 }
 
- bool PhysicalDevice::checkPhysicalDeviceQueues(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+bool PhysicalDevice::checkPhysicalDeviceQueues(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 
 	QueueFamilyIndices testedIndices = getQueueFamiles(vkPhysicalDevice, surface);
 	if (testedIndices.validate()) {
@@ -32,7 +32,7 @@
 	return false;
 }
 
- bool PhysicalDevice::checkPhysicalDeviceExtemsions(VkPhysicalDevice vkPhysicalDevice, bool enableValidationLayers) {
+bool PhysicalDevice::checkPhysicalDeviceExtemsions(VkPhysicalDevice vkPhysicalDevice, bool enableValidationLayers) {
 	uint32_t extensionCount = 0;
 	vkEnumerateDeviceExtensionProperties(vkPhysicalDevice, nullptr, &extensionCount, nullptr);
 
@@ -64,23 +64,23 @@
 	return true;
 }
 
- bool PhysicalDevice::checkPhysicalDeviceCompatible(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface, bool enableValidationLayers) {
+bool PhysicalDevice::checkPhysicalDeviceCompatible(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface, bool enableValidationLayers) {
 	return (checkPhysicalDeviceExtemsions(vkPhysicalDevice, enableValidationLayers) && checkPhysicalDeviceQueues(vkPhysicalDevice, surface) && checkDeviceSwapChain(vkPhysicalDevice, surface));
 }
 
- std::vector<const char*> PhysicalDevice::getDeviceExtensions() {
+std::vector<const char*> PhysicalDevice::getDeviceExtensions() {
 	return physicalDeviceExtensions;
 }
 
- QueueFamilyIndices PhysicalDevice::getQueueFamilyIndices() {
+QueueFamilyIndices PhysicalDevice::getQueueFamilyIndices() {
 	return indices;
 }
 
- VkPhysicalDevice PhysicalDevice::getPhysicalDevice() {
+VkPhysicalDevice PhysicalDevice::getPhysicalDevice() {
 	return device;
 }
 
- SwapChainSupportDetails PhysicalDevice::getSurfaceSwapchainSupport(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+SwapChainSupportDetails PhysicalDevice::getSurfaceSwapchainSupport(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 	SwapChainSupportDetails supportDetails;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, surface, &supportDetails.capabilities);
@@ -104,7 +104,7 @@
 	return supportDetails;
 }
 
- VkPhysicalDevice PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers) {
+VkPhysicalDevice PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers) {
 
 	uint32_t physDeviceCount = 0; //physical device count
 	vkEnumeratePhysicalDevices(vkInstance, &physDeviceCount, nullptr);
@@ -142,10 +142,10 @@
 			}
 		}
 	}
-     VkPhysicalDeviceProperties deviceProperties{};
-     vkGetPhysicalDeviceProperties(highestDevice, &deviceProperties);
+	VkPhysicalDeviceProperties deviceProperties{};
+	vkGetPhysicalDeviceProperties(highestDevice, &deviceProperties);
 
-     std::cout<<(deviceProperties.deviceName);
+	std::cout << (deviceProperties.deviceName);
 
 	if (highestDevice == nullptr || highest == -1) {
 		throw std::runtime_error("Failed to evaluate devices");
@@ -157,11 +157,11 @@
 	return highestDevice;
 }
 
- VkDeviceSize PhysicalDevice::getUniformSlabSize() {
-	 return minUBOAllocation;
- }
+VkDeviceSize PhysicalDevice::getUniformSlabSize() {
+	return minUBOAllocation;
+}
 
- QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
 	QueueFamilyIndices deviceQueueFamilyIndices;
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &queueFamilyCount, nullptr);

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef Camera_H
 #define Camera_H
 
@@ -22,14 +21,14 @@ class Camera
 	DescriptorSet* descriptorSet;
 	VkExtent2D extent;
 public:
-	
+
 
 	projectionUBO mvp;
 
 	Camera() {
 
 	}
-	
+
 	~Camera() {
 
 	}

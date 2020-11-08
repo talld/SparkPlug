@@ -15,6 +15,9 @@ public:
 		this->renderer = renderer;
 	}
 
+	Game() {
+	}
+
 	~Game() {
 
 	}
@@ -57,6 +60,10 @@ public:
 
 		renderer->record(&meshes);
 	};
+
+	std::vector<Mesh>* getMeshes() {
+		return &meshes;
+	}
 
 	void terminate() {
 		for (size_t i = 0; i < meshes.size(); i++) {

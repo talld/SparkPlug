@@ -29,7 +29,7 @@ struct UBOMesh {
 class Mesh
 {
 private:
-	
+
 	VkDeviceSize size;
 	UBOMesh ubo;
 	void* data;

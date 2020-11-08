@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PhysicalDevice_H
+#define PhysicalDevice_H
 
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
@@ -81,3 +82,5 @@ public:
 		return minUBOAllocation;
 	}
 };
+
+#endif

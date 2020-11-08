@@ -43,8 +43,7 @@ VkBuffer Mesh::createIndexBuffer(VkQueue transferQueue, VkCommandPool transferCo
 	VkBuffer stagingBuffer;
 	VmaAllocation stagingAllocation;
 
-	createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT| VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_ONLY, &stagingBuffer, &stagingAllocation);
-
+	createBuffer(allocator, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_ONLY, &stagingBuffer, &stagingAllocation);
 	
 	//cpu data move to src buffer
 	void* data;

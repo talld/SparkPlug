@@ -19,7 +19,7 @@ void CommandBuffers::record(Swapchain swapchain, RenderPass renderPass, Graphics
 	VkCommandBufferBeginInfo graphicBufferBeginInfo{};
 	graphicBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	graphicBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-	
+
 	VkRenderPassBeginInfo renderPassBeginInfo{};
 	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassBeginInfo.renderPass = renderPass.getRenderPasses().main;
@@ -38,7 +38,7 @@ void CommandBuffers::record(Swapchain swapchain, RenderPass renderPass, Graphics
 		}
 
 		vkCmdBeginRenderPass(commandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);	
+		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline.getPipeline().graphicsPipeline);
 		for (size_t j = 0; j < meshes->size(); j++) {
 			VkBuffer vertexBuffer[] = { meshes->at(j).getVetexBuffer() };
 			VkDeviceSize offsets[] = { 0 };

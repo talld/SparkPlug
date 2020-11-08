@@ -9,14 +9,14 @@ layout(binding = 0) uniform VP{ // view projection these could just be one premu
 	mat4 view; 
 } vp;
 
-layout(binding = 1) uniform Model{ 
-	mat4 model;
-} model;
+//layout(binding = 1) uniform Model{ 
+//	mat4 model;
+//} model;
 
 layout(location = 0) out vec3 fragmentColor;
 
 void main() {
-    gl_Position = vp.projection * vp.view * model.model * vec4(position,1.0);
+    gl_Position = vp.projection * vp.view * vec4(position,1.0);
 
     fragmentColor = color;
 }	

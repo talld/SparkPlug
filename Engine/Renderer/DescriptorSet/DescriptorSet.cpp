@@ -68,7 +68,7 @@ void DescriptorSet::create(VkDescriptorPool descriptorPool) {
 		VkDescriptorBufferInfo MVPBufferInfo{};
 		MVPBufferInfo.buffer = uniformBuffers[i];
 		MVPBufferInfo.offset = 0;							//im pretty sure this wont mess up vma allocations but keep an eye out
- 		MVPBufferInfo.range = sizeof(projectionUBO);		//range of data (same as size)
+		MVPBufferInfo.range = sizeof(projectionUBO);		//range of data (same as size)
 
 		VkWriteDescriptorSet MVPSetWrite{};
 		MVPSetWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -112,7 +112,7 @@ void DescriptorSet::write(projectionUBO mvp) {
 }
 
 void DescriptorSet::destroy() {
-	
+
 	vkDestroyDescriptorSetLayout(lDevice, descriptorSetLayout, nullptr);
 
 	for (size_t i = 0; i < uniformBuffers.size(); i++) {
