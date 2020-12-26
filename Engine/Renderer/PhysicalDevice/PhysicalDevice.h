@@ -53,11 +53,11 @@ private:
 	int getDeviceScore(VkPhysicalDevice vkPhysicalDevice);
 
 
-	bool checkDeviceSwapChain(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
+	bool checkDeviceSwapchain(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
 
 	bool checkPhysicalDeviceQueues(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
 
-	bool checkPhysicalDeviceExtemsions(VkPhysicalDevice vkPhysicalDevice, bool enableValidationLayers);
+	bool checkPhysicalDeviceExtensions(VkPhysicalDevice vkPhysicalDevice, bool enableValidationLayers);
 
 	bool checkPhysicalDeviceCompatible(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface, bool enableValidationLayers);
 
@@ -74,13 +74,9 @@ public:
 
 	VkPhysicalDevice select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers);
 
-	VkDeviceSize getUniformSlabSize();
-
 	QueueFamilyIndices getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
 
-	VkDeviceSize getMinUBOAllocation() {
-		return minUBOAllocation;
-	}
+	VkDeviceSize getMinUBOAllocation();
 };
 
 #endif
