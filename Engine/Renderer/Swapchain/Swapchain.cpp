@@ -14,7 +14,7 @@ VkExtent2D Swapchain::selectSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCa
 	}
 }
 
-VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPresentModeKHR> presentModes) {
+VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPresentModeKHR>& presentModes) const {
 	for (const auto& presentMode : presentModes) {
 		if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
 			return presentMode;
@@ -24,7 +24,7 @@ VkPresentModeKHR Swapchain::selectSwapchainPresentMode(std::vector<VkPresentMode
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
+VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR& format, std::vector<VkSurfaceFormatKHR>& availableFormats) const{
 
 	VkFormat chosenFormat = availableFormats[0].format;
 
@@ -44,7 +44,7 @@ VkFormat Swapchain::selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector
 	return chosenFormat;
 }
 
-VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats) {
+VkColorSpaceKHR Swapchain::selectSwapchainColorSpace(VkSurfaceFormatKHR& format, std::vector<VkSurfaceFormatKHR>& availableFormats) const{
 	for (const auto& availableFormat : availableFormats) {
 		if (availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 			return VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -63,7 +63,7 @@ VkSurfaceFormatKHR Swapchain::selectSwapchainSurfaceFormat(std::vector<VkSurface
 	return format;
 }
 
-VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
+VkImageView Swapchain::createImageView(LogicalDevice& logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
 	VkImageViewCreateInfo imageViewCreateInfo{};
 	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	imageViewCreateInfo.image = image;
@@ -86,7 +86,7 @@ VkImageView Swapchain::createImageView(LogicalDevice logicalDevice, VkImage imag
 	return imageView;
 }
 
-void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass) {
+void Swapchain::createFrameBuffers(VkDevice& vkLogicalDevice, RenderPass renderPass) {
 	swapchainDetails.frameBuffers.resize(swapchainDetails.swapchainImages.size());
 
 	for (size_t i = 0; i < swapchainDetails.frameBuffers.size(); i++) {
@@ -111,7 +111,7 @@ void Swapchain::createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPa
 	}
 }
 
-void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window) {
+void Swapchain::create(PhysicalDevice& physicalDevice, LogicalDevice& logicalDevice, VkSurfaceKHR& surface, Window& window) {
 
     auto swapChainSupport = physicalDevice.getSurfaceSwapchainSupport(physicalDevice.getPhysicalDevice(), surface);
 
@@ -125,36 +125,40 @@ void Swapchain::create(PhysicalDevice physicalDevice, LogicalDevice logicalDevic
 	else {
 		minImageCount = swapChainSupport.capabilities.minImageCount + 1;
 	}
-	VkSwapchainCreateInfoKHR swapChainCreateInfo{};
+	VkSwapchainCreateInfoKHR swapchainCreateInfo{};
 
-	swapChainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
+	swapchainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
-	swapChainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	swapChainCreateInfo.surface = surface;
-	swapChainCreateInfo.minImageCount = minImageCount;
-	swapChainCreateInfo.imageFormat = format.format;
-	swapChainCreateInfo.imageColorSpace = format.colorSpace;
-	swapChainCreateInfo.imageExtent = extent;
-	swapChainCreateInfo.imageArrayLayers = 1;
-	swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	swapChainCreateInfo.preTransform = swapChainSupport.capabilities.currentTransform;
-	swapChainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-	swapChainCreateInfo.clipped = VK_TRUE;
+	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	swapchainCreateInfo.surface = surface;
+	swapchainCreateInfo.minImageCount = minImageCount;
+	swapchainCreateInfo.imageFormat = format.format;
+	swapchainCreateInfo.imageColorSpace = format.colorSpace;
+	swapchainCreateInfo.presentMode = presentMode;
+	swapchainCreateInfo.imageExtent = extent;
+	swapchainCreateInfo.imageArrayLayers = 1;
+	swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	swapchainCreateInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+	swapchainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	swapchainCreateInfo.clipped = VK_TRUE;
 
+
+	//if the present and graphics queue are the same use concurent sharing
 	if (physicalDevice.getQueueFamilyIndices().graphicsFamilyIndex != physicalDevice.getQueueFamilyIndices().presentationFamilyIndex) {
-		swapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-		swapChainCreateInfo.queueFamilyIndexCount = 2;
+		swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+		swapchainCreateInfo.queueFamilyIndexCount = 2;
 		uint32_t queueFamilyIndices[] = { static_cast<uint32_t>(physicalDevice.getQueueFamilyIndices().graphicsFamilyIndex), static_cast<uint32_t>(physicalDevice.getQueueFamilyIndices().presentationFamilyIndex) };
-		swapChainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
+		swapchainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
 	}
+	//if the are unique then use exlcusive
 	else {
-		swapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		swapChainCreateInfo.queueFamilyIndexCount = 0; // Optional
-		swapChainCreateInfo.pQueueFamilyIndices = nullptr; // Optional
+		swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		swapchainCreateInfo.queueFamilyIndexCount = 0; // Optional as we dont actualy care as we're not sharing 
+		swapchainCreateInfo.pQueueFamilyIndices = nullptr; // Optional
 	}
 
 
-	if (vkCreateSwapchainKHR(logicalDevice.getLogicalDevice(), &swapChainCreateInfo, nullptr, &vkSwapchain) != VK_SUCCESS) {
+	if (vkCreateSwapchainKHR(logicalDevice.getLogicalDevice(), &swapchainCreateInfo, nullptr, &vkSwapchain) != VK_SUCCESS) {
 		throw std::runtime_error("Failed to create swapchain");
 	}
 

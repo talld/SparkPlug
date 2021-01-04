@@ -52,26 +52,26 @@ private:
 
 	VkExtent2D selectSwapExtent(const VkSurfaceCapabilitiesKHR& surfaceCapabilities, Window window);
 
-	VkPresentModeKHR selectSwapchainPresentMode(std::vector<VkPresentModeKHR> presentModes);
+	VkPresentModeKHR selectSwapchainPresentMode(std::vector<VkPresentModeKHR>& presentModes) const;
 
-	VkFormat selectSwapchainFormat(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats);
+	VkFormat selectSwapchainFormat(VkSurfaceFormatKHR& format, std::vector<VkSurfaceFormatKHR>& availableFormats) const;
 
-	VkColorSpaceKHR selectSwapchainColorSpace(VkSurfaceFormatKHR format, std::vector<VkSurfaceFormatKHR> availableFormats);
+	VkColorSpaceKHR selectSwapchainColorSpace(VkSurfaceFormatKHR& format, std::vector<VkSurfaceFormatKHR>& availableFormats) const;
 
 	VkSurfaceFormatKHR selectSwapchainSurfaceFormat(std::vector<VkSurfaceFormatKHR> availableFormats);
 
-	VkImageView createImageView(LogicalDevice logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+	VkImageView createImageView(LogicalDevice& logicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
 public:
 
 
-	void createFrameBuffers(VkDevice vkLogicalDevice, RenderPass renderPass);
+	void createFrameBuffers(VkDevice& vkLogicalDevice, RenderPass renderPass);
 
 	uint32_t getImageCount() {
 		return swapchainImageCount;
 	}
 
-	void create(PhysicalDevice physicalDevice, LogicalDevice logicalDevice, VkSurfaceKHR surface, Window window);
+	void create(PhysicalDevice& physicalDevice, LogicalDevice& logicalDevice, VkSurfaceKHR& surface, Window& window);
 
 	VkSwapchainKHR getSwapchain();
 

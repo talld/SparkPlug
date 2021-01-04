@@ -1,13 +1,18 @@
 #include "LogicalDevice.h"
 
-void LogicalDevice::create(PhysicalDevice physicalDevice) {
+void LogicalDevice::create(PhysicalDevice& physicalDevice) {
 
 	const std::vector<const char*> physicalDeviceExtensions = physicalDevice.getDeviceExtensions();
 
 	std::vector<VkDeviceQueueCreateInfo> deviceQueueCreateInfos;
+
+
 	std::set<int> uniqueQueueFamilies = { physicalDevice.getQueueFamilyIndices().graphicsFamilyIndex , physicalDevice.getQueueFamilyIndices().presentationFamilyIndex };
 
+	//all queues just given a defualt priority of 1
 	float qPriority = 1.0f;
+	
+	//create each unique queue from their indices
 	for (int queueFamily : uniqueQueueFamilies) {
 		VkDeviceQueueCreateInfo deviceQueueCreateInfo{};
 		deviceQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;

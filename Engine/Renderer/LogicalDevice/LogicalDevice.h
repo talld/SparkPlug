@@ -24,18 +24,34 @@ struct Queues {
 
 class LogicalDevice {
 private:
-
+	   
 	Queues queues;
-
+	 
 	VkDevice vkLogicalDevice;
 
 public:
-	void create(PhysicalDevice physicalDevice);
+	/// <summary>
+	/// creates VkLogicalDevice for the given physicalDevice
+	/// </summary>
+	/// <param name="physicalDevice">physicalDevice referance that the logicalDevice should be made for</param>
+	void create(PhysicalDevice& physicalDevice);
 
+	/// <summary>
+	/// Returns VkDevice for the logicalDeivce
+	/// </summary>
+	/// <returns>VkDevice for the logicalDeivce</returns>
 	VkDevice getLogicalDevice();
 
+	/// <summary>
+	/// Returns Queues struct for the logicalDeivce
+	/// </summary>
+	/// <returns>A Queues struct containing VkQueue objects for the logicalDevice</returns>
 	Queues getQueues();
 
+
+	/// <summary>
+	/// Destroys the VkLogicalDevice
+	/// </summary>
 	void destory();
 
 };
