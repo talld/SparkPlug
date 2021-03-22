@@ -20,7 +20,8 @@ private:
 	VkDevice lDevice;
 	VkExtent2D extent;
 
-	VkDescriptorSetLayout descriptorSetLayout;
+	VkDescriptorSetLayout graphicsDescriptorSetLayout;
+	VkDescriptorSetLayout computeDescriptorSetLayout;
 
 	VmaAllocator allocator;
 	std::vector<VkBuffer> uniformBuffers;

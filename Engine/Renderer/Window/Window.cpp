@@ -1,7 +1,6 @@
 #include "Window.h"
 
  void Window::create() {
-	glfwInit();
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -10,9 +9,9 @@
 
 }
 
- void Window::createSurface(VkInstance vkInstance) {
-
-	if (glfwCreateWindowSurface(vkInstance, window, nullptr, &surface)) {
+ void Window::createSurface(VkInstance& vkInstance) {
+	 this->instance = vkInstance;
+	if (glfwCreateWindowSurface(instance, window, nullptr, &surface)) {
 		throw std::runtime_error("Failed to create window surface");
 	}
 
@@ -26,13 +25,12 @@
 	return window;
 }
 
- VkSurfaceKHR Window::getSurface() {
+ VkSurfaceKHR& Window::getSurface() {
 	return surface;
 }
 
- void Window::destroy(VkInstance vkInstance) {
-	vkDestroySurfaceKHR(vkInstance, surface, nullptr);
+ void Window::destroy() {
+	vkDestroySurfaceKHR(instance, surface, nullptr);
 	glfwDestroyWindow(window);
-	glfwTerminate();
 }
 

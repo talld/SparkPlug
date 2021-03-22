@@ -20,7 +20,7 @@ int PhysicalDevice::getDeviceScore(VkPhysicalDevice vkPhysicalDevice) {
 }
 
 
-SwapchainSupportDetails PhysicalDevice::getSurfaceSwapchainSupport(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+SwapchainSupportDetails PhysicalDevice::getSurfaceSwapchainSupport(VkPhysicalDevice& vkPhysicalDevice, VkSurfaceKHR& surface) {
 	SwapchainSupportDetails supportDetails;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, surface, &supportDetails.capabilities);
@@ -104,13 +104,13 @@ QueueFamilyIndices PhysicalDevice::getQueueFamilyIndices() {
 	return indices;
 }
 
-VkPhysicalDevice PhysicalDevice::getPhysicalDevice() {
+VkPhysicalDevice& PhysicalDevice::getPhysicalDevice() {
 	return device;
 }
 
 
 
-VkPhysicalDevice PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers) {
+VkPhysicalDevice PhysicalDevice::select(VkInstance& vkInstance, VkSurfaceKHR& surface, bool enableValidationLayers){
 
 	uint32_t physDeviceCount = 0; //physical device count
 	vkEnumeratePhysicalDevices(vkInstance, &physDeviceCount, nullptr);
@@ -168,7 +168,8 @@ VkPhysicalDevice PhysicalDevice::select(VkInstance vkInstance, VkSurfaceKHR surf
 }
 
 
-QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface) {
+QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice& vkPhysicalDevice, VkSurfaceKHR& surface){
+	
 	QueueFamilyIndices deviceQueueFamilyIndices;
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &queueFamilyCount, nullptr);
@@ -177,15 +178,28 @@ QueueFamilyIndices PhysicalDevice::getQueueFamiles(VkPhysicalDevice vkPhysicalDe
 	vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &queueFamilyCount, queueFamilies.data());
 
 	int i = 0;
+
+	//find graphics queue
 	for (const auto& queueFamily : queueFamilies) {
 		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
 			deviceQueueFamilyIndices.graphicsFamilyIndex = i;
 			break;
 		}
-
 		i++;
 	}
 	i = 0;
+
+	//find computer queue
+	for (const auto& queueFamily : queueFamilies) {
+		if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
+			deviceQueueFamilyIndices.computeFamilyIndex = i;
+			break;
+		}
+		i++;
+	}
+	i = 0;
+
+	//find present queue
 	for (const auto& queueFamily : queueFamilies) {
 		VkBool32 surfaceSupported;
 		vkGetPhysicalDeviceSurfaceSupportKHR(vkPhysicalDevice, i, surface, &surfaceSupported);

@@ -1,9 +1,8 @@
 #include "Renderer.h"
 
 void Renderer::bootRender() {
+	glfwInit();
 	initSettings();
-	window.create();
-	glfwWindow = window.getWindow();
 	initVulkan();
 }
 
@@ -13,6 +12,7 @@ void Renderer::enterMainLoop() {
 
 void Renderer::terminate() {
 	cleanUp();
+	glfwTerminate();
 }
 
 void Renderer::createMesh(Mesh* mesh, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices){
@@ -31,6 +31,9 @@ void Renderer::record(std::vector<Mesh>* meshes){
 void Renderer::initVulkan() {
 	instance.createInstance(enableValidationLayers);
 	vkInstance = instance.getInstance();
+
+	window.create();
+	glfwWindow = window.getWindow();
 
 	window.createSurface(vkInstance);
 	surface = window.getSurface();
@@ -157,7 +160,7 @@ void Renderer::cleanUp() {
 
 	logicalDevice.destory();
 
-	window.destroy(vkInstance);
+	window.destroy();
 
 	instance.destroy(enableValidationLayers);
 

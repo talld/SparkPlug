@@ -7,7 +7,7 @@ void LogicalDevice::create(PhysicalDevice& physicalDevice) {
 	std::vector<VkDeviceQueueCreateInfo> deviceQueueCreateInfos;
 
 
-	std::set<int> uniqueQueueFamilies = { physicalDevice.getQueueFamilyIndices().graphicsFamilyIndex , physicalDevice.getQueueFamilyIndices().presentationFamilyIndex };
+	std::set<int> uniqueQueueFamilies = { physicalDevice.getQueueFamilyIndices().graphicsFamilyIndex , physicalDevice.getQueueFamilyIndices().presentationFamilyIndex, physicalDevice.getQueueFamilyIndices().computeFamilyIndex };
 
 	//all queues just given a defualt priority of 1
 	float qPriority = 1.0f;

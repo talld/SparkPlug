@@ -4,6 +4,8 @@ VkDescriptorSetLayout DescriptorSet::createLayout(VkDevice lDevice) {
 
 	this->lDevice = lDevice;
 
+	std::vector<VkDescriptorSetLayoutBinding> graphicsSetLayouts(0);
+
 	VkDescriptorSetLayoutBinding MVPLayoutBinding{};
 	MVPLayoutBinding.binding = 0;
 	MVPLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -11,19 +13,53 @@ VkDescriptorSetLayout DescriptorSet::createLayout(VkDevice lDevice) {
 	MVPLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	MVPLayoutBinding.pImmutableSamplers = nullptr;
 
+	graphicsSetLayouts.push_back(MVPLayoutBinding);
 
-	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo{};
-	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	descriptorSetLayoutCreateInfo.pBindings = &MVPLayoutBinding;
-	descriptorSetLayoutCreateInfo.bindingCount = 1;
+	std::vector<VkDescriptorSetLayoutBinding> computeSetLayouts(0);
+	
+	VkDescriptorSetLayoutBinding computeSRCBuffer{};
+	MVPLayoutBinding.binding = 1;
+	MVPLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+	MVPLayoutBinding.descriptorCount = 1;
+	MVPLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+	MVPLayoutBinding.pImmutableSamplers = nullptr;
 
-	VkResult result = vkCreateDescriptorSetLayout(lDevice, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
+	computeSetLayouts.push_back(computeSRCBuffer);
+
+	VkDescriptorSetLayoutBinding computeDSTBuffer{};
+	MVPLayoutBinding.binding = 2;
+	MVPLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+	MVPLayoutBinding.descriptorCount = 1;
+	MVPLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+	MVPLayoutBinding.pImmutableSamplers = nullptr;
+
+	computeSetLayouts.push_back(computeDSTBuffer);
+	
+	std::cout << "\n" << graphicsSetLayouts.size() << "\n";
+
+	VkDescriptorSetLayoutCreateInfo graphicsDescriptorSetLayoutCreateInfo{};
+	graphicsDescriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	graphicsDescriptorSetLayoutCreateInfo.pBindings = graphicsSetLayouts.data();
+	graphicsDescriptorSetLayoutCreateInfo.bindingCount = static_cast<uint32_t>(graphicsSetLayouts.size());
+
+	VkResult result = vkCreateDescriptorSetLayout(lDevice, &graphicsDescriptorSetLayoutCreateInfo, nullptr, &graphicsDescriptorSetLayout);
 
 	if (result != VK_SUCCESS) {
-		throw std::runtime_error("Failed to create descriptorSet" + result);
+		throw std::runtime_error("Failed to create Graphics descriptorSet" + result);
 	}
 
-	return descriptorSetLayout;
+	VkDescriptorSetLayoutCreateInfo computeDescriptorSetLayoutCreateInfo{};
+	computeDescriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	computeDescriptorSetLayoutCreateInfo.pBindings = computeSetLayouts.data();
+	computeDescriptorSetLayoutCreateInfo.bindingCount = static_cast<uint32_t>(computeSetLayouts.size());
+
+	result = vkCreateDescriptorSetLayout(lDevice, &computeDescriptorSetLayoutCreateInfo, nullptr, &computeDescriptorSetLayout);
+
+	if (result != VK_SUCCESS) {
+		throw std::runtime_error("Failed to create Compute descriptorSet" + result);
+	}
+
+	return graphicsDescriptorSetLayout;
 }
 
 
@@ -49,7 +85,7 @@ void DescriptorSet::create(VkDescriptorPool descriptorPool) {
 
 	descriptorSets.resize(uniformBuffers.size());
 
-	std::vector<VkDescriptorSetLayout> descriptorSetLayouts(uniformBuffers.size(), descriptorSetLayout);
+	std::vector<VkDescriptorSetLayout> descriptorSetLayouts(uniformBuffers.size(), graphicsDescriptorSetLayout);
 
 	VkDescriptorSetAllocateInfo descriptorSetAllocateInfo{};
 	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -85,7 +121,7 @@ void DescriptorSet::create(VkDescriptorPool descriptorPool) {
 }
 
 VkDescriptorSetLayout DescriptorSet::getDecriptorSetLayout() {
-	return descriptorSetLayout;
+	return graphicsDescriptorSetLayout;
 }
 
 VkDescriptorSet* DescriptorSet::getDescriptorSet(int i) {
@@ -113,7 +149,7 @@ void DescriptorSet::write(projectionUBO mvp) {
 
 void DescriptorSet::destroy() {
 
-	vkDestroyDescriptorSetLayout(lDevice, descriptorSetLayout, nullptr);
+	vkDestroyDescriptorSetLayout(lDevice, graphicsDescriptorSetLayout, nullptr);
 
 	for (size_t i = 0; i < uniformBuffers.size(); i++) {
 		vmaDestroyBuffer(allocator, uniformBuffers[i], uniformBufferAllocations[i]);

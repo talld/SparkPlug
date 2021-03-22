@@ -27,10 +27,11 @@ struct SwapchainSupportDetails {
 
 struct QueueFamilyIndices {
 	int graphicsFamilyIndex = -1;
+	int computeFamilyIndex = -1;
 	int presentationFamilyIndex = -1;
 
 	bool validate() {
-		return (graphicsFamilyIndex != -1 && presentationFamilyIndex != -1);
+		return (graphicsFamilyIndex != -1 && presentationFamilyIndex != -1 && computeFamilyIndex != -1);
 	}
 };
 
@@ -92,7 +93,7 @@ public:
 	/// <param name="vkPhysicalDevice">The device to check support</param>
 	/// <param name="surface">The surface to check agenst</param>
 	/// <returns>SwapchainSupportDetails struct</returns>
-	static SwapchainSupportDetails getSurfaceSwapchainSupport(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
+	static SwapchainSupportDetails getSurfaceSwapchainSupport(VkPhysicalDevice& vkPhysicalDevice, VkSurfaceKHR& surface);
 
 	/// <summary>
 	/// Gets available queue familes from given device
@@ -100,13 +101,13 @@ public:
 	/// <param name="vkPhysicalDevice">The device to get the queue famalies from</param>
 	/// <param name="surface">The surface for the present queue</param>
 	/// <returns>A QueueFamilyIndices struct containg the relivant queue family indices</returns>
-	static QueueFamilyIndices getQueueFamiles(VkPhysicalDevice vkPhysicalDevice, VkSurfaceKHR surface);
+	static QueueFamilyIndices getQueueFamiles(VkPhysicalDevice& vkPhysicalDevice, VkSurfaceKHR& surface);
 
 	std::vector<const char*> getDeviceExtensions();
 
 	QueueFamilyIndices getQueueFamilyIndices();
 
-	VkPhysicalDevice getPhysicalDevice();
+	VkPhysicalDevice& getPhysicalDevice();
 
 	
 	/// <summary>
@@ -116,7 +117,7 @@ public:
 	/// <param name="surface"></param>
 	/// <param name="enableValidationLayers"></param>
 	/// <returns></returns>
-	VkPhysicalDevice select(VkInstance vkInstance, VkSurfaceKHR surface, bool enableValidationLayers);
+	VkPhysicalDevice select(VkInstance& vkInstance, VkSurfaceKHR& surface, bool enableValidationLayers);
 
 	
 

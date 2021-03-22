@@ -22,25 +22,37 @@ class Window {
 private:
 	GLFWwindow* window;
 	VkSurfaceKHR surface;
-	
+	VkInstance instance;
 public:
 
 
 	 uint32_t WIDTH = 1024;
 	 uint32_t HEIGHT = 720;
 
-
+	/// <summary>
+	/// Createa glfw window
+	/// </summary>
 	void create();
 
-	void createSurface(VkInstance vkInstance);
+	/// <summary>
+	/// Creates a vulkan surfaceKHR
+	/// </summary>
+	/// <param name="vkInstance">The instance for which to create the instance</param>
+	void createSurface(VkInstance& vkInstance);
 
+	/// <summary>
+	/// Update the Widow(currently does nothing)
+	/// </summary>
 	void update();
 
 	GLFWwindow* getWindow();
 
-	VkSurfaceKHR getSurface();
+	VkSurfaceKHR& getSurface();
 
-	void destroy(VkInstance vkInstance);
+	/// <summary>
+	/// Destroys the window and its corrisponding surface
+	/// </summary>
+	void destroy();
 
 
 };
