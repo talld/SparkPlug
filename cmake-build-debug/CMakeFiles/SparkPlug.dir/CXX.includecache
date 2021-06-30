@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Allocator/Allocator.h
+vulkan/vulkan.h
+-
+stdexcept
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Allocator/stdexcept
+
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Instance/Instance.h
+../Allocator/Allocator.h
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Allocator/Allocator.h
+GLFW/glfw3.h
+-
+vulkan/vulkan.h
+-
+vector
+-
+set
+-
+
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/PhysicalDevice/PhysicalDevice.cpp
+cstdlib
+-
+PhysicalDevice.h
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/PhysicalDevice/PhysicalDevice.h
+
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/PhysicalDevice/PhysicalDevice.h
+../Allocator/Allocator.h
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Allocator/Allocator.h
+../Instance/Instance.h
+/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Instance/Instance.h
+vulkan/vulkan.h
+-
+vector
+-
+

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="SparkPlug"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\..\usr\lib\cmake\;CMake Files\..\..\..\..\..\usr\lib\cmake\glm\;CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SparkPlug">
+				<Option output="/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/SparkPlug" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/10"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/10"/>
+					<Add directory="/usr/include/c++/10/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/10/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 SparkPlug"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SparkPlug/fast">
+				<Option output="/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/SparkPlug" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/10"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/10"/>
+					<Add directory="/usr/include/c++/10/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/10/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 SparkPlug/fast"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/talldie/GameDev/Engines/SparkPlug/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Allocator/Allocator.cpp">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Allocator/Allocator.h">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Instance/Instance.cpp">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Instance/Instance.h">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/PhysicalDevice/PhysicalDevice.cpp">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/PhysicalDevice/PhysicalDevice.h">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Renderer.cpp">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Renderer.h">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Window/Window.cpp">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/Engine/Renderer/Window/Window.h">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/main.cpp">
+			<Option target="SparkPlug"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/../../../../../usr/lib/cmake/glm/glmConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib\cmake\glm\"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/../../../../../usr/lib/cmake/glm/glmConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib\cmake\glm\"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets-none.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		</Unit>
+		<Unit filename="/home/talldie/GameDev/Engines/SparkPlug/../../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
