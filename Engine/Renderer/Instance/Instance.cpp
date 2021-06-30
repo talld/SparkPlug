@@ -1,6 +1,13 @@
 #include <cstring>
 #include "Instance.h"
 
+Instance::Instance() {
+    vkInstance = nullptr;
+    requiredExtensions = std::set<const char*>();
+    applicationInfo = {};
+    createInfo = {};
+}
+
 Instance* Instance::create(Allocator allocator) {
 
 	applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -10,6 +17,19 @@ Instance* Instance::create(Allocator allocator) {
     applicationInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
     applicationInfo.apiVersion = VK_API_VERSION_1_1;
 
+    #ifndef NDEBUG
+
+        //validation layers
+        requireExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+        const std::vector<const char*> validationLayers = {
+             "VK_LAYER_KHRONOS_validation"
+        };
+
+    #else
+        const std::vector<const char*> validationLayers();
+    #endif
+
     //push all the glfw extensions to the set
     getRequiredExtensions();
 
@@ -18,10 +38,8 @@ Instance* Instance::create(Allocator allocator) {
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &applicationInfo;
 
-    createInfo.ppEnabledLayerNames = nullptr;
-    createInfo.enabledLayerCount = 0;
-
-
+    createInfo.ppEnabledLayerNames = validationLayers.data();
+    createInfo.enabledLayerCount = validationLayers.size();
 
     // i'm fairly certain theres a better way to do this, not sure why i can't just get a pointer from the iterator
     // TODO: find a better way to do this
@@ -118,5 +136,3 @@ bool Instance::checkRequiredExtensions(std::set<const char*> required) {
     return allSupported;
 
 }
-
-

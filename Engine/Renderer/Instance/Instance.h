@@ -21,10 +21,17 @@ public:
     VkApplicationInfo applicationInfo;
     VkInstanceCreateInfo createInfo;
 
+    Instance();
+
     Instance* create(Allocator allocator);
 
     Instance* destroy(Allocator allocator);
 
+    /***
+     * Add an extension to the required extension list
+     * @param extensionName name of extension (char[256])
+     * @return self
+     */
     Instance* requireExtension(const char* extensionName);
 
 private:

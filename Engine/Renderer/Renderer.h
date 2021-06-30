@@ -5,6 +5,7 @@
 #include "Window/Window.h"
 #include "Instance/Instance.h"
 #include "PhysicalDevice/PhysicalDevice.h"
+#include "LogicalDevice/LogicalDevice.h"
 
 #include <GLFW/glfw3.h>
 
@@ -16,11 +17,11 @@ public:
     Renderer* destroy();
 
 private:
-    Window window;
-    PhysicalDevice physicalDevice;
-    Instance instance;
     Allocator allocator;
-
+    Window window;
+    Instance instance;
+    PhysicalDevice physicalDevice;
+    LogicalDevice logicalDevice;
 };
 
 

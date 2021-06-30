@@ -11,10 +11,17 @@ class PhysicalDevice {
 
 
 public:
-    VkPhysicalDevice physicalDevice;
-    VkPhysicalDeviceLimits deviceLimits;
+    VkPhysicalDevice vkPhysicalDevice;
+    VkPhysicalDeviceFeatures deviceFeatures{};
 
-    PhysicalDevice* create(Allocator allocator, Instance instance);
+    //queue family indices
+    int graphicsFamilyIndex{};
+    int computeFamilyIndex{};
+    int transferFamilyIndex{};
+
+    PhysicalDevice();
+
+    PhysicalDevice* create(Allocator allocator, const Instance& instance);
 
 private:
 
@@ -30,14 +37,20 @@ private:
      * @param device Device to check
      * @return True if device supports all families
      */
-    bool hasRequiredQueueFamilies(VkPhysicalDevice device);
+    bool hasRequiredQueueFamilies(VkPhysicalDevice device) const;
 
     /***
      * Selects a device from the list according to some arbitrary checks
-     * @param devices Devices to select from
+     * @param devices Devices to selectDevice from
      * @return selected Device
      */
-    VkPhysicalDevice select(std::vector<VkPhysicalDevice> devices);
+    VkPhysicalDevice selectDevice(const std::vector<VkPhysicalDevice>& devices) const;
+
+    /***
+     * Selects the queue families indices for the chosen device
+     * @return self
+     */
+    PhysicalDevice* selectQueueFamilies();
 };
 
 #endif //PhysicalDevice_H

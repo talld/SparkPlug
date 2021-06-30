@@ -1,7 +1,17 @@
 #include <cstdlib>
 #include "PhysicalDevice.h"
 
-PhysicalDevice *PhysicalDevice::create(Allocator allocator, Instance instance) {
+PhysicalDevice::PhysicalDevice() {
+    vkPhysicalDevice = {};
+    deviceFeatures = {};
+
+    graphicsFamilyIndex = -1;
+    computeFamilyIndex = -1;
+    transferFamilyIndex = -1;
+}
+
+
+PhysicalDevice *PhysicalDevice::create(Allocator allocator, const Instance& instance) {
 
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance.vkInstance ,&deviceCount, nullptr);
@@ -14,9 +24,11 @@ PhysicalDevice *PhysicalDevice::create(Allocator allocator, Instance instance) {
 
     vkEnumeratePhysicalDevices(instance.vkInstance ,&deviceCount, devices.data());
 
-
     filterDevices(devices);
-    select(devices);
+
+    vkPhysicalDevice = selectDevice(devices);
+
+    selectQueueFamilies();
 
     return this;
 }
@@ -25,7 +37,7 @@ PhysicalDevice *PhysicalDevice::create(Allocator allocator, Instance instance) {
 /// Private Functions ///
 /////////////////////////
 
-VkPhysicalDevice PhysicalDevice::select(std::vector<VkPhysicalDevice> devices) {
+VkPhysicalDevice PhysicalDevice::selectDevice(const std::vector<VkPhysicalDevice>& devices) const{
 
     int64_t highestScore = INT64_MIN;
     VkPhysicalDevice chosenDevice;
@@ -67,7 +79,7 @@ std::vector<VkPhysicalDevice> PhysicalDevice::filterDevices(std::vector<VkPhysic
     return devices;
 }
 
-bool PhysicalDevice::hasRequiredQueueFamilies(VkPhysicalDevice device) {
+bool PhysicalDevice::hasRequiredQueueFamilies(VkPhysicalDevice device) const{
 
     uint32_t qFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &qFamilyCount, nullptr);
@@ -83,13 +95,13 @@ bool PhysicalDevice::hasRequiredQueueFamilies(VkPhysicalDevice device) {
 
     for(const auto fam : queueFams){
 
-        if((fam.queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
+        if(fam.queueFlags & VK_QUEUE_GRAPHICS_BIT)
             graphicsFound = true;
 
-        if((fam.queueFlags & VK_QUEUE_COMPUTE_BIT) != 0)
+        if(fam.queueFlags & VK_QUEUE_COMPUTE_BIT)
             computeFound = true;
 
-        if((fam.queueFlags & VK_QUEUE_TRANSFER_BIT) != 0)
+        if(fam.queueFlags & VK_QUEUE_TRANSFER_BIT)
             transferFound = true;
 
         if(computeFound && graphicsFound && transferFound){
@@ -100,5 +112,51 @@ bool PhysicalDevice::hasRequiredQueueFamilies(VkPhysicalDevice device) {
 
     return  allFound;
 }
+
+PhysicalDevice *PhysicalDevice::selectQueueFamilies() {
+
+    uint32_t qFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &qFamilyCount, nullptr);
+
+    std::vector<VkQueueFamilyProperties> queueFams(qFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &qFamilyCount, queueFams.data());
+
+    bool graphicsFound = false;
+    bool computeFound  = false;
+    bool transferFound = false;
+
+    bool allFound      = false;
+
+    int index = 0;
+
+    //TODO: Optimize family selection
+    for(const auto fam : queueFams) {
+
+        if (fam.queueCount > 0 && fam.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            graphicsFound = true;
+            graphicsFamilyIndex = index;
+        }
+
+        if (fam.queueCount > 0 && fam.queueFlags & VK_QUEUE_COMPUTE_BIT) {
+            computeFound = true;
+            computeFamilyIndex = index;
+        }
+
+        if (fam.queueCount > 0 && fam.queueFlags & VK_QUEUE_TRANSFER_BIT) {
+            transferFound = true;
+            transferFamilyIndex = index;
+        }
+
+        index++;
+
+        if (computeFound && graphicsFound && transferFound) {
+            allFound = true;
+            break;
+        }
+    }
+
+    return this;
+}
+
 
 
