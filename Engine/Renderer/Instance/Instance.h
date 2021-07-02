@@ -5,6 +5,8 @@
 
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
+
+#include <cstring>
 #include <vector>
 #include <set>
 
@@ -40,7 +42,7 @@ private:
 
     std::vector<VkExtensionProperties> getAvailableExtensions();
 
-    bool checkRequiredExtensions(std::set<const char*> requiredExtensions);
+    bool checkRequiredExtensions(const std::set<const char*>& requiredExtensions);
 };
 
 #endif

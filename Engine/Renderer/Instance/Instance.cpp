@@ -1,4 +1,4 @@
-#include <cstring>
+
 #include "Instance.h"
 
 Instance::Instance() {
@@ -17,7 +17,7 @@ Instance* Instance::create(Allocator allocator) {
     applicationInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
     applicationInfo.apiVersion = VK_API_VERSION_1_1;
 
-    #ifndef NDEBUG
+    #ifdef DEBUG
 
         //validation layers
         requireExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -27,13 +27,14 @@ Instance* Instance::create(Allocator allocator) {
         };
 
     #else
-        const std::vector<const char*> validationLayers();
+        const std::vector<const char*> validationLayers;
     #endif
 
     //push all the glfw extensions to the set
     getRequiredExtensions();
 
-    if(checkRequiredExtensions(requiredExtensions));
+    if(!checkRequiredExtensions(requiredExtensions))
+        allocator.throwError(VK_ERROR_EXTENSION_NOT_PRESENT, "Could not find required extensions");
 
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &applicationInfo;
@@ -90,49 +91,48 @@ std::vector<VkExtensionProperties> Instance::getAvailableExtensions() {
 
     uint32_t extenCount;
     vkEnumerateInstanceExtensionProperties(nullptr, &extenCount, nullptr);
-
     std::vector<VkExtensionProperties> extens(extenCount);
-
     vkEnumerateInstanceExtensionProperties(nullptr, &extenCount, extens.data());
 
     return extens;
 }
 
-bool Instance::checkRequiredExtensions(std::set<const char*> required) {
+bool Instance::checkRequiredExtensions(const std::set<const char*>& required) {
 
     bool allSupported = false;
 
     std::vector<VkExtensionProperties> availableExtens = getAvailableExtensions();
 
+    std::vector<const char*> extens = std::vector<const char*>(required.begin(), required.end());
+
     #ifdef DEBUG
 
-    printf("Available Extensions:\n");
-    for(const auto exten : availableExtens)
-        printf("----%s\n", exten.extensionName);
+        printf("Available Instance Extensions:\n");
+        for(const auto exten : availableExtens)
+            printf("----%s\n", exten.extensionName);
 
-    printf("Required Extensions:\n");
-    for(const auto exten : requiredExtensions)
+        printf("Required Instance Extensions:\n");
+        for(const auto exten : requiredExtensions)
         printf("----%s\n", exten);
 
     #endif
 
-    for(const auto exten : requiredExtensions){
-        for(const auto availableExten : availableExtens) {
-         if(strncmp(exten,availableExten.extensionName, strlen(availableExten.extensionName)) == 0)
-                required.erase(exten); //
+    for (auto exten = extens.end()-1; exten != extens.begin()-1; exten--) {
+        for (const auto availableExten : availableExtens) {
+            if (strncmp(*exten, availableExten.extensionName, strlen(availableExten.extensionName)) == 0)
+                extens.erase(exten);
         }
     }
 
-    if(!required.empty()){
+    if(!extens.empty()){
 
         allSupported = false;
-        for(const auto exten : required) {
-            printf("Could not find Extension: %s\n", exten);
+        for(const auto exten : extens) {
+            printf("Could not find instance Extension: %s\n", exten);
         }
 
     }else
         allSupported = true;
 
     return allSupported;
-
 }
