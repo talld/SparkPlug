@@ -1,7 +1,3 @@
-//
-// Created by talldie on 30/06/2021.
-//
-
 #include "LogicalDevice.h"
 
 LogicalDevice::LogicalDevice() {
@@ -13,19 +9,31 @@ LogicalDevice::LogicalDevice() {
 
 LogicalDevice *LogicalDevice::create(Allocator allocator, const Instance& instance, const PhysicalDevice& physicalDevice) {
 
+    //TODO: allocate queues in accordance to pool size / swap-chain Images
+    int queueCount = 1;
+
+    graphicsQueues.resize( queueCount);
+    computeQueues.resize(queueCount);
+    transferQueues.resize(queueCount);
+
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
     float priority = 1.0f;
 
-    VkDeviceQueueCreateInfo graphicsQueueCreateInfo;
-    graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    graphicsQueueCreateInfo.queueFamilyIndex = physicalDevice.graphicsFamilyIndex;
-    graphicsQueueCreateInfo.pQueuePriorities = &priority;
-    graphicsQueueCreateInfo.queueCount = 1;                                         //when pools start to be allocated they'll be one queue per pool
-    graphicsQueueCreateInfo.flags = 0;
-    graphicsQueueCreateInfo.pNext = nullptr;
+    for(const auto uniqueQueueIndex : std::set<int>{physicalDevice.graphicsFamilyIndex,
+                                     physicalDevice.computeFamilyIndex,
+                                     physicalDevice.transferFamilyIndex})
+    {
+        VkDeviceQueueCreateInfo graphicsQueueCreateInfo;
+        graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        graphicsQueueCreateInfo.queueFamilyIndex = uniqueQueueIndex;
+        graphicsQueueCreateInfo.pQueuePriorities = &priority;
+        graphicsQueueCreateInfo.queueCount = queueCount;
+        graphicsQueueCreateInfo.flags = 0;
+        graphicsQueueCreateInfo.pNext = nullptr;
 
-    queueCreateInfos.push_back(graphicsQueueCreateInfo);
+        queueCreateInfos.push_back(graphicsQueueCreateInfo);
+    }
 
     VkDeviceCreateInfo createInfo;
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -37,8 +45,9 @@ LogicalDevice *LogicalDevice::create(Allocator allocator, const Instance& instan
     createInfo.ppEnabledLayerNames = nullptr;
     createInfo.enabledLayerCount = 0;
 
-    createInfo.ppEnabledExtensionNames = nullptr;
-    createInfo.enabledExtensionCount = 0;
+    auto extens = std::vector<const char*>(physicalDevice.requiredExtensions.begin(), physicalDevice.requiredExtensions.end());
+    createInfo.ppEnabledExtensionNames = extens.data();
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(extens.size());
 
     createInfo.pEnabledFeatures = &physicalDevice.deviceFeatures;
 
@@ -51,10 +60,20 @@ LogicalDevice *LogicalDevice::create(Allocator allocator, const Instance& instan
         allocator.throwError(res, "Failed to create logicalDevice");
     }
 
+    for(int i = 0; i < graphicsQueues.size(); i++)
+        vkGetDeviceQueue(vkDevice, physicalDevice.graphicsFamilyIndex, i, &graphicsQueues[i]);
+
+    for(int i = 0; i < computeQueues.size(); i++)
+        vkGetDeviceQueue(vkDevice, physicalDevice.computeFamilyIndex, i, &graphicsQueues[i]);
+
+    for(int i = 0; i < transferQueues.size(); i++)
+        vkGetDeviceQueue(vkDevice, physicalDevice.transferFamilyIndex, i, &graphicsQueues[i]);
+
     return this;
 }
 
 LogicalDevice *LogicalDevice::destroy(Allocator allocator) {
+
     vkDestroyDevice(vkDevice, allocator.allocationCallbacksPtr);
     return this;
 }
