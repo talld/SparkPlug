@@ -4,6 +4,7 @@
 #include "Allocator/Allocator.h"
 #include "Window/Window.h"
 #include "Instance/Instance.h"
+#include "Surface/Surface.h"
 #include "PhysicalDevice/PhysicalDevice.h"
 #include "LogicalDevice/LogicalDevice.h"
 
@@ -20,6 +21,7 @@ private:
     Allocator allocator;
     Window window;
     Instance instance;
+    Surface surface;
     PhysicalDevice physicalDevice;
     LogicalDevice logicalDevice;
 };

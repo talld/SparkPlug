@@ -6,8 +6,17 @@ Renderer *Renderer::create() {
 
     window.create();
     instance.create(allocator);
-    physicalDevice.create(allocator, instance);
+
+    surface.create(allocator, instance, window);
+
+    physicalDevice.create(allocator, instance, surface)
+        ->checkSurfaceSupported(surface);
+
+    surface.evaluateCapabilities(physicalDevice);
+
     logicalDevice.create(allocator, instance, physicalDevice);
+
+    window.show();
 
     while(!window.closeRequested())
         glfwPollEvents();
