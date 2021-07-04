@@ -21,9 +21,9 @@ public:
 
     Surface();
 
-    Surface* create(Allocator allocator, const Instance& instance, const Window& window);
+    Surface* create(const Allocator &allocator, const Instance& instance, const Window& window);
 
-    Surface* destroy(Allocator allocator, const Instance& instance);
+    Surface* destroy(const Allocator &allocator, const Instance& instance);
 
     Surface* evaluateCapabilities(const PhysicalDevice& device);
 

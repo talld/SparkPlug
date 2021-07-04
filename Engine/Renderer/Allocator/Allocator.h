@@ -16,7 +16,7 @@ public:
 
     Allocator* create();
 
-    Allocator* throwError(VkResult result, const char* str);
+    Allocator* throwError(const VkResult result, const char* str) const;
 
 private:
     VkAllocationCallbacks allocationCallbacks;

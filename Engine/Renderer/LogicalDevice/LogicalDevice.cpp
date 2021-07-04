@@ -7,7 +7,7 @@ LogicalDevice::LogicalDevice() {
     transferQueues = std::vector<VkQueue>();
 }
 
-LogicalDevice *LogicalDevice::create(Allocator allocator, const Instance& instance, const PhysicalDevice& physicalDevice) {
+LogicalDevice *LogicalDevice::create(const Allocator &allocator, const Instance& instance, const PhysicalDevice& physicalDevice) {
 
     //TODO: allocate queues in accordance to pool size / swap-chain Images
     int queueCount = 1;
@@ -16,13 +16,17 @@ LogicalDevice *LogicalDevice::create(Allocator allocator, const Instance& instan
     computeQueues.resize(queueCount);
     transferQueues.resize(queueCount);
 
+    graphicsFamilyIndex = physicalDevice.graphicsFamilyIndex;
+    computeFamilyIndex = physicalDevice.computeFamilyIndex;
+    transferFamilyIndex = physicalDevice.transferFamilyIndex;
+
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
     float priority = 1.0f;
 
-    for(const auto uniqueQueueIndex : std::set<int>{physicalDevice.graphicsFamilyIndex,
-                                     physicalDevice.computeFamilyIndex,
-                                     physicalDevice.transferFamilyIndex})
+    for(const auto uniqueQueueIndex : std::set<uint32_t>{graphicsFamilyIndex,
+                                                         computeFamilyIndex,
+                                                         transferFamilyIndex})
     {
         VkDeviceQueueCreateInfo graphicsQueueCreateInfo;
         graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -61,18 +65,18 @@ LogicalDevice *LogicalDevice::create(Allocator allocator, const Instance& instan
     }
 
     for(int i = 0; i < graphicsQueues.size(); i++)
-        vkGetDeviceQueue(vkDevice, physicalDevice.graphicsFamilyIndex, i, &graphicsQueues[i]);
+        vkGetDeviceQueue(vkDevice, graphicsFamilyIndex, i, &graphicsQueues[i]);
 
     for(int i = 0; i < computeQueues.size(); i++)
-        vkGetDeviceQueue(vkDevice, physicalDevice.computeFamilyIndex, i, &graphicsQueues[i]);
+        vkGetDeviceQueue(vkDevice, computeFamilyIndex, i, &graphicsQueues[i]);
 
     for(int i = 0; i < transferQueues.size(); i++)
-        vkGetDeviceQueue(vkDevice, physicalDevice.transferFamilyIndex, i, &graphicsQueues[i]);
+        vkGetDeviceQueue(vkDevice, transferFamilyIndex, i, &graphicsQueues[i]);
 
     return this;
 }
 
-LogicalDevice *LogicalDevice::destroy(Allocator allocator) {
+LogicalDevice *LogicalDevice::destroy(const Allocator &allocator) {
 
     vkDestroyDevice(vkDevice, allocator.allocationCallbacksPtr);
     return this;

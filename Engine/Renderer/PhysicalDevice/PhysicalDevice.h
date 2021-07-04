@@ -27,7 +27,7 @@ public:
 
     PhysicalDevice();
 
-    PhysicalDevice* create(Allocator allocator, const Instance& instance, const Surface& surface);
+    PhysicalDevice* create(const Allocator &allocator, const Instance& instance, const Surface& surface);
 
     PhysicalDevice* destroy();
 

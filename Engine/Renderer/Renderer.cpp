@@ -16,6 +16,8 @@ Renderer *Renderer::create() {
 
     logicalDevice.create(allocator, instance, physicalDevice);
 
+    swapchain.create(allocator, window, surface, logicalDevice);
+
     window.show();
 
     while(!window.closeRequested())
@@ -26,7 +28,9 @@ Renderer *Renderer::create() {
 
 Renderer *Renderer::destroy() {
 
+    swapchain.destroy(allocator,logicalDevice);
     logicalDevice.destroy(allocator);
+    surface.destroy(allocator, instance);
     instance.destroy(allocator);
     window.destroy(allocator,instance);
 

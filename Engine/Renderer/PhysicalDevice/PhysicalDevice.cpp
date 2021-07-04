@@ -12,7 +12,7 @@ PhysicalDevice::PhysicalDevice() {
 }
 
 
-PhysicalDevice *PhysicalDevice::create(Allocator allocator, const Instance& instance, const Surface& surface) {
+PhysicalDevice *PhysicalDevice::create(const Allocator &allocator, const Instance& instance, const Surface& surface) {
 
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance.vkInstance ,&deviceCount, nullptr);

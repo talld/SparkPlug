@@ -10,7 +10,7 @@ Allocator* Allocator::create() {
     return this;
 }
 
-Allocator* Allocator::throwError(VkResult result, const char* str) {
+Allocator* Allocator::throwError(const VkResult result, const char* str) const{
     std::cout << "Error tripped, reason for error: ";
     switch (result) {
         case VK_ERROR_EXTENSION_NOT_PRESENT:

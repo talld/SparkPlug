@@ -7,6 +7,7 @@
 #include "Surface/Surface.h"
 #include "PhysicalDevice/PhysicalDevice.h"
 #include "LogicalDevice/LogicalDevice.h"
+#include "Swapchain/Swapchain.h"
 
 #include <GLFW/glfw3.h>
 
@@ -24,6 +25,7 @@ private:
     Surface surface;
     PhysicalDevice physicalDevice;
     LogicalDevice logicalDevice;
+    Swapchain swapchain;
 };
 
 

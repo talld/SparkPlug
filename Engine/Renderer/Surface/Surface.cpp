@@ -7,7 +7,7 @@ Surface::Surface() {
     availableFormats = std::vector<VkSurfaceFormatKHR>();
 }
 
-Surface *Surface::create(Allocator allocator, const Instance& instance, const Window& window) {
+Surface *Surface::create(const Allocator &allocator, const Instance& instance, const Window& window) {
     VkResult res = glfwCreateWindowSurface(instance.vkInstance, window.glfwWindow, allocator.allocationCallbacksPtr, &vkSurface);
 
     if(res != VK_SUCCESS){
@@ -17,7 +17,7 @@ Surface *Surface::create(Allocator allocator, const Instance& instance, const Wi
     return this;
 }
 
-Surface *Surface::destroy(Allocator allocator, const Instance& instance) {
+Surface *Surface::destroy(const Allocator &allocator, const Instance& instance) {
 
     vkDestroySurfaceKHR(instance.vkInstance, vkSurface, allocator.allocationCallbacksPtr);
     return this;

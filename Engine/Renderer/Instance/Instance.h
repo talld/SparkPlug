@@ -25,9 +25,9 @@ public:
 
     Instance();
 
-    Instance* create(Allocator allocator);
+    Instance* create(Allocator& allocator);
 
-    Instance* destroy(Allocator allocator);
+    Instance* destroy(Allocator& allocator);
 
     /***
      * Add an extension to the required extension list

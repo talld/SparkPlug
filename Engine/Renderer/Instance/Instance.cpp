@@ -8,7 +8,7 @@ Instance::Instance() {
     createInfo = {};
 }
 
-Instance* Instance::create(Allocator allocator) {
+Instance* Instance::create(Allocator& allocator) {
 
 	applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     applicationInfo.pApplicationName = "App";
@@ -61,7 +61,7 @@ Instance* Instance::create(Allocator allocator) {
     return this;
 }
 
-Instance *Instance::destroy(Allocator allocator) {
+Instance *Instance::destroy(Allocator& allocator) {
     vkDestroyInstance(vkInstance, allocator.allocationCallbacksPtr);
     return this;
 }
