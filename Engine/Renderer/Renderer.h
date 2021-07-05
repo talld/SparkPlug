@@ -8,6 +8,7 @@
 #include "PhysicalDevice/PhysicalDevice.h"
 #include "LogicalDevice/LogicalDevice.h"
 #include "Swapchain/Swapchain.h"
+#include "ImageView/ImageView.h"
 
 #include <GLFW/glfw3.h>
 
@@ -26,6 +27,7 @@ private:
     PhysicalDevice physicalDevice;
     LogicalDevice logicalDevice;
     Swapchain swapchain;
+    ImageView swapchainImages;
 };
 
 

@@ -7,10 +7,11 @@ LogicalDevice::LogicalDevice() {
     transferQueues = std::vector<VkQueue>();
 }
 
-LogicalDevice *LogicalDevice::create(const Allocator &allocator, const Instance& instance, const PhysicalDevice& physicalDevice) {
+LogicalDevice *LogicalDevice::create(const Allocator &allocator, const Instance &instance,
+                                     const PhysicalDevice &physicalDevice,
+                                     const Surface &surface) {
 
-    //TODO: allocate queues in accordance to pool size / swap-chain Images
-    int queueCount = 1;
+    uint32_t queueCount = surface.imageCount;
 
     graphicsQueues.resize( queueCount);
     computeQueues.resize(queueCount);
@@ -22,7 +23,7 @@ LogicalDevice *LogicalDevice::create(const Allocator &allocator, const Instance&
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
-    float priority = 1.0f;
+    std::vector<float> priorities = std::vector<float>(queueCount,1.0f);
 
     for(const auto uniqueQueueIndex : std::set<uint32_t>{graphicsFamilyIndex,
                                                          computeFamilyIndex,
@@ -31,7 +32,7 @@ LogicalDevice *LogicalDevice::create(const Allocator &allocator, const Instance&
         VkDeviceQueueCreateInfo graphicsQueueCreateInfo;
         graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
         graphicsQueueCreateInfo.queueFamilyIndex = uniqueQueueIndex;
-        graphicsQueueCreateInfo.pQueuePriorities = &priority;
+        graphicsQueueCreateInfo.pQueuePriorities = priorities.data();
         graphicsQueueCreateInfo.queueCount = queueCount;
         graphicsQueueCreateInfo.flags = 0;
         graphicsQueueCreateInfo.pNext = nullptr;

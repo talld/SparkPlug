@@ -25,7 +25,8 @@ public:
 
     LogicalDevice();
 
-    LogicalDevice* create(const Allocator &allocator, const Instance& instance, const PhysicalDevice& physicalDevice);
+    LogicalDevice *create(const Allocator &allocator, const Instance &instance, const PhysicalDevice &physicalDevice,
+                          const Surface &surface);
 
     LogicalDevice* destroy(const Allocator &allocator);
 };

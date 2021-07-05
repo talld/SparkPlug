@@ -14,9 +14,11 @@ Renderer *Renderer::create() {
 
     surface.evaluateCapabilities(physicalDevice);
 
-    logicalDevice.create(allocator, instance, physicalDevice);
+    logicalDevice.create(allocator, instance, physicalDevice, surface);
 
     swapchain.create(allocator, window, surface, logicalDevice);
+
+    swapchainImages.create(allocator, logicalDevice, swapchain);
 
     window.show();
 
@@ -27,7 +29,7 @@ Renderer *Renderer::create() {
 }
 
 Renderer *Renderer::destroy() {
-
+    swapchainImages.destroy(allocator, logicalDevice);
     swapchain.destroy(allocator,logicalDevice);
     logicalDevice.destroy(allocator);
     surface.destroy(allocator, instance);

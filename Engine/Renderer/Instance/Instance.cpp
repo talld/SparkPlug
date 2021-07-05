@@ -17,7 +17,6 @@ Instance* Instance::create(Allocator& allocator) {
     applicationInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
     applicationInfo.apiVersion = VK_API_VERSION_1_1;
 
-    #ifdef DEBUG
 
         //validation layers
         requireExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -26,9 +25,9 @@ Instance* Instance::create(Allocator& allocator) {
              "VK_LAYER_KHRONOS_validation"
         };
 
-    #else
-        const std::vector<const char*> validationLayers;
-    #endif
+
+        //const std::vector<const char*> validationLayers;
+
 
     //push all the glfw extensions to the set
     getRequiredExtensions();
