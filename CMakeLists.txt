@@ -11,7 +11,7 @@ add_executable(SparkPlug
         Engine/Renderer/PhysicalDevice/PhysicalDevice.cpp
         Engine/Renderer/LogicalDevice/LogicalDevice.cpp
         Engine/Renderer/Swapchain/Swapchain.cpp
-        Engine/Renderer/ImageView/ImageView.cpp Engine/Renderer/ImageView/ImageView.h)
+        Engine/Renderer/ImageView/ImageView.cpp)
 set(CMAKE_CXX_STANDARD 20)
 
 

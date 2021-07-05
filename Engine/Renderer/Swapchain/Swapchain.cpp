@@ -19,16 +19,6 @@ Swapchain *Swapchain::create(const Allocator &allocator, const Window &window, c
 
     extent = selectExtent(surface.capabilities, window);
 
-    // sel image count
-    uint32_t imageCount = surface.capabilities.minImageCount;
-
-    if(imageCount == 0){  // if no defined min
-        imageCount = 2;
-    }
-
-    imageCount = std::min(imageCount, surface.capabilities.maxImageCount);
-
-
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 
@@ -38,7 +28,7 @@ Swapchain *Swapchain::create(const Allocator &allocator, const Window &window, c
     createInfo.presentMode = presentMode;
     createInfo.imageExtent = extent;
 
-    createInfo.minImageCount = imageCount;
+    createInfo.minImageCount = surface.imageCount;
     createInfo.imageArrayLayers = 1;                                        // TODO stero 3d support;
 
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;

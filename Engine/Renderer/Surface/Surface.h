@@ -15,6 +15,7 @@ class Surface {
 public:
 
     VkSurfaceKHR vkSurface;
+    uint32_t imageCount;
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> availableFormats;
     std::vector<VkPresentModeKHR> availablePresentModes;

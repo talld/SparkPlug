@@ -40,5 +40,14 @@ Surface *Surface::evaluateCapabilities(const PhysicalDevice &device) {
     availablePresentModes.resize(modeCount);
     vkGetPhysicalDeviceSurfacePresentModesKHR(device.vkPhysicalDevice, vkSurface, &modeCount, availablePresentModes.data());
 
+
+    imageCount = capabilities.minImageCount;
+
+    if(imageCount == 0){  // if no defined min
+        imageCount = 2;
+    }
+
+    imageCount = std::min(imageCount+1, capabilities.maxImageCount);
+
     return this;
 }
