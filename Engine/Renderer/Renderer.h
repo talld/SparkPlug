@@ -9,6 +9,8 @@
 #include "LogicalDevice/LogicalDevice.h"
 #include "Swapchain/Swapchain.h"
 #include "ImageView/ImageView.h"
+#include "GraphicsPipeline/GraphicsPipeline.h"
+#include "Shader/Shader.h"
 
 #include <GLFW/glfw3.h>
 
@@ -28,6 +30,7 @@ private:
     LogicalDevice logicalDevice;
     Swapchain swapchain;
     ImageView swapchainImages;
+    GraphicsPipeline graphicsPipeline;
 };
 
 
