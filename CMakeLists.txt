@@ -3,6 +3,7 @@ project(SparkPlug)
 
 add_executable(SparkPlug
         main.cpp
+        Engine/Utilities/FileUtils.cpp
         Engine/Renderer/Renderer.cpp
         Engine/Renderer/Allocator/Allocator.cpp
         Engine/Renderer/Window/Window.cpp
@@ -11,7 +12,9 @@ add_executable(SparkPlug
         Engine/Renderer/PhysicalDevice/PhysicalDevice.cpp
         Engine/Renderer/LogicalDevice/LogicalDevice.cpp
         Engine/Renderer/Swapchain/Swapchain.cpp
-        Engine/Renderer/ImageView/ImageView.cpp)
+        Engine/Renderer/ImageView/ImageView.cpp
+        )
+
 set(CMAKE_CXX_STANDARD 20)
 
 
