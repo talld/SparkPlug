@@ -31,6 +31,7 @@ private:
     Swapchain swapchain;
     ImageView swapchainImages;
     GraphicsPipeline graphicsPipeline;
+    Renderpass mainPass;
 };
 
 

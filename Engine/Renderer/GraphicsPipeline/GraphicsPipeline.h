@@ -5,6 +5,7 @@
 #include "../LogicalDevice/LogicalDevice.h"
 #include "../Swapchain/Swapchain.h"
 #include "../Shader/Shader.h"
+#include "../Renderpass/Renderpass.h"
 
 #include <vulkan/vulkan.h>
 
@@ -18,7 +19,8 @@ public:
 
     GraphicsPipeline();
 
-    GraphicsPipeline *create(const Allocator &allocator, const LogicalDevice &device, const Swapchain &swapchain);
+    GraphicsPipeline *create(const Allocator &allocator, const LogicalDevice &device, const Swapchain &swapchain,
+                             const Renderpass &renderpass);
 
     GraphicsPipeline *destroy(const Allocator &allocator, const LogicalDevice &device);
 

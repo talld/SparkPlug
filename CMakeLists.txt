@@ -14,6 +14,7 @@ add_executable(SparkPlug
         Engine/Renderer/Swapchain/Swapchain.cpp
         Engine/Renderer/ImageView/ImageView.cpp
         Engine/Renderer/Shader/Shader.cpp
+        Engine/Renderer/Renderpass/Renderpass.cpp
         Engine/Renderer/ComputePipeline/ComputePipeline.cpp
         Engine/Renderer/GraphicsPipeline/GraphicsPipeline.cpp
         )

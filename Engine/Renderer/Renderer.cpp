@@ -20,6 +20,8 @@ Renderer *Renderer::create() {
 
     swapchainImages.create(allocator, logicalDevice, swapchain);
 
+    mainPass.create(allocator, logicalDevice, swapchain);
+
     Shader vertexShader;
     vertexShader.create(allocator, logicalDevice, "/home/talldie/GameDev/Engines/SparkPlug/Shaders/vert.spv");
 
@@ -29,7 +31,7 @@ Renderer *Renderer::create() {
     graphicsPipeline.createLayout(allocator, logicalDevice)
             ->addShaderStage(vertexShader, VK_SHADER_STAGE_VERTEX_BIT)
             ->addShaderStage(fragmentShader, VK_SHADER_STAGE_FRAGMENT_BIT)
-            ->create(allocator, logicalDevice, swapchain);
+            ->create(allocator, logicalDevice, swapchain, mainPass);
 
     fragmentShader.destroy(allocator, logicalDevice);
     vertexShader.destroy(allocator, logicalDevice);
@@ -44,6 +46,7 @@ Renderer *Renderer::create() {
 
 Renderer *Renderer::destroy() {
     graphicsPipeline.destroy(allocator, logicalDevice);
+    mainPass.destroy(allocator, logicalDevice);
     swapchainImages.destroy(allocator, logicalDevice);
     swapchain.destroy(allocator,logicalDevice);
     logicalDevice.destroy(allocator);

@@ -1,4 +1,5 @@
 #include "GraphicsPipeline.h"
+#include "../Renderpass/Renderpass.h"
 
 GraphicsPipeline::GraphicsPipeline() {
 
@@ -9,7 +10,8 @@ GraphicsPipeline::GraphicsPipeline() {
 }
 
 GraphicsPipeline * GraphicsPipeline::create(const Allocator &allocator, const LogicalDevice &device,
-                                            const Swapchain &swapchain) {
+                                            const Swapchain &swapchain,
+                                            const Renderpass &renderpass) {
 
     VkViewport viewPort;
     viewPort.x = 0;
@@ -115,6 +117,7 @@ GraphicsPipeline * GraphicsPipeline::create(const Allocator &allocator, const Lo
     createInfo.pRasterizationState = &rasterizerCreateInfo;
     createInfo.pMultisampleState = &multisampleCreateInfo;
     createInfo.pColorBlendState = &colorBlendCreateInfo;
+    createInfo.renderPass = renderpass.vkRenderPass;
 
     VkResult res = vkCreateGraphicsPipelines(device.vkDevice, nullptr, 1, &createInfo, allocator.allocationCallbacksPtr, &vkPipeline);
 
@@ -126,6 +129,7 @@ GraphicsPipeline * GraphicsPipeline::create(const Allocator &allocator, const Lo
 }
 
 GraphicsPipeline *GraphicsPipeline::destroy(const Allocator &allocator, const LogicalDevice &device) {
+    vkDestroyPipeline(device.vkDevice, vkPipeline, allocator.allocationCallbacksPtr);
     return this;
 }
 
